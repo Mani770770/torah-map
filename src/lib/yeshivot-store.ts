@@ -24,7 +24,7 @@ export interface Yeshiva {
   staff?: StaffMember[];
 }
 
-const KEY = "yeshivot.v2";
+const KEY = "yeshivot.v1";
 
 const seed: Yeshiva[] = [
   { id: "1", name: "ישיבת מיר", sector: "ליטאי", gender: "בנים", city: "ירושלים", description: "אחת הישיבות הליטאיות הגדולות בעולם, מרכז תורני בלב שכונת בית ישראל.", phone: "02-5371213", website: "https://mir.org.il", gallery: [], staff: [] },
