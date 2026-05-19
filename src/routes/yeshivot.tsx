@@ -116,19 +116,33 @@ function YeshivotPage() {
             ) : (
               <div className="grid gap-4 sm:grid-cols-2">
                 {filtered.map(y => (
-                  <article key={y.id} className="rounded-xl border border-border bg-card p-5 transition-shadow hover:shadow-md">
-                    <div className="flex items-start justify-between gap-2">
-                      <h3 className="text-lg font-bold text-foreground">{y.name}</h3>
-                      <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
-                        {y.sector}
-                      </span>
+                  <Link
+                    key={y.id}
+                    to="/yeshivot/$id"
+                    params={{ id: y.id }}
+                    className="group overflow-hidden rounded-xl border border-border bg-card transition-all hover:-translate-y-0.5 hover:shadow-lg"
+                  >
+                    {y.image ? (
+                      <img src={y.image} alt={y.name} className="h-40 w-full object-cover" />
+                    ) : (
+                      <div className="flex h-40 w-full items-center justify-center bg-gradient-to-br from-primary/90 to-primary text-primary-foreground">
+                        <BookOpen className="h-12 w-12 opacity-80" />
+                      </div>
+                    )}
+                    <div className="p-5">
+                      <div className="flex items-start justify-between gap-2">
+                        <h3 className="text-lg font-bold text-foreground group-hover:text-primary">{y.name}</h3>
+                        <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                          {y.sector}
+                        </span>
+                      </div>
+                      <div className="mt-2 flex flex-wrap gap-3 text-xs text-muted-foreground">
+                        <span className="inline-flex items-center gap-1"><MapPin className="h-3 w-3" />{y.city}</span>
+                        <span className="inline-flex items-center gap-1"><Users className="h-3 w-3" />{y.gender}</span>
+                      </div>
+                      <p className="mt-3 text-sm text-muted-foreground line-clamp-2">{y.description}</p>
                     </div>
-                    <div className="mt-2 flex flex-wrap gap-3 text-xs text-muted-foreground">
-                      <span className="inline-flex items-center gap-1"><MapPin className="h-3 w-3" />{y.city}</span>
-                      <span className="inline-flex items-center gap-1"><Users className="h-3 w-3" />{y.gender}</span>
-                    </div>
-                    <p className="mt-3 text-sm text-muted-foreground line-clamp-3">{y.description}</p>
-                  </article>
+                  </Link>
                 ))}
               </div>
             )}
