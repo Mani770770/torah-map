@@ -18,7 +18,7 @@ export const Route = createFileRoute("/admin")({
 });
 
 type Draft = Omit<Yeshiva, "id">;
-const empty: Draft = { name: "", sector: "ליטאי", gender: "בנים", city: "", description: "" };
+const empty: Draft = { name: "", sector: "ליטאי", gender: "בנים", city: "", description: "", image: "" };
 
 function AdminPage() {
   const { list, add, update, remove } = useYeshivot();
