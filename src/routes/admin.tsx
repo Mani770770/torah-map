@@ -1,11 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Pencil, Trash2, Plus, X } from "lucide-react";
+import { Pencil, Trash2, Plus, X, Upload, UserPlus } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { useYeshivot, SECTORS, GENDERS, type Yeshiva, type Sector, type Gender } from "@/lib/yeshivot-store";
+import { useYeshivot, SECTORS, GENDERS, type Yeshiva, type Sector, type Gender, type StaffMember } from "@/lib/yeshivot-store";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -18,7 +18,18 @@ export const Route = createFileRoute("/admin")({
 });
 
 type Draft = Omit<Yeshiva, "id">;
-const empty: Draft = { name: "", sector: "ליטאי", gender: "בנים", city: "", description: "", image: "" };
+const empty: Draft = {
+  name: "", sector: "ליטאי", gender: "בנים", city: "", description: "",
+  image: "", phone: "", website: "", gallery: [], staff: [],
+};
+
+function fileToDataUrl(f: File): Promise<string> {
+  return new Promise((resolve) => {
+    const r = new FileReader();
+    r.onload = () => resolve(String(r.result));
+    r.readAsDataURL(f);
+  });
+}
 
 function AdminPage() {
   const { list, add, update, remove } = useYeshivot();
@@ -29,7 +40,7 @@ function AdminPage() {
   const startEdit = (y: Yeshiva) => {
     setEditing(y.id);
     const { id: _id, ...rest } = y;
-    setDraft(rest);
+    setDraft({ ...empty, ...rest, gallery: rest.gallery ?? [], staff: rest.staff ?? [] });
     setShowForm(true);
   };
   const startAdd = () => { setEditing(null); setDraft(empty); setShowForm(true); };
@@ -42,6 +53,21 @@ function AdminPage() {
     else add(draft);
     cancel();
   };
+
+  const addGalleryFiles = async (files: FileList | null) => {
+    if (!files) return;
+    const urls = await Promise.all(Array.from(files).map(fileToDataUrl));
+    setDraft(d => ({ ...d, gallery: [...(d.gallery ?? []), ...urls] }));
+  };
+  const removeGalleryAt = (i: number) =>
+    setDraft(d => ({ ...d, gallery: (d.gallery ?? []).filter((_, idx) => idx !== i) }));
+
+  const addStaff = () =>
+    setDraft(d => ({ ...d, staff: [...(d.staff ?? []), { id: crypto.randomUUID(), name: "", role: "", image: "" }] }));
+  const updateStaff = (id: string, patch: Partial<StaffMember>) =>
+    setDraft(d => ({ ...d, staff: (d.staff ?? []).map(s => s.id === id ? { ...s, ...patch } : s) }));
+  const removeStaff = (id: string) =>
+    setDraft(d => ({ ...d, staff: (d.staff ?? []).filter(s => s.id !== id) }));
 
   return (
     <div className="min-h-screen bg-background">
@@ -61,8 +87,8 @@ function AdminPage() {
         </div>
 
         {showForm && (
-          <form onSubmit={submit} className="mb-8 rounded-xl border border-border bg-card p-6 shadow-sm">
-            <div className="mb-4 flex items-center justify-between">
+          <form onSubmit={submit} className="mb-8 space-y-6 rounded-xl border border-border bg-card p-6 shadow-sm">
+            <div className="flex items-center justify-between">
               <h2 className="text-xl font-bold text-foreground">
                 {editing ? "עריכת ישיבה" : "הוספת ישיבה חדשה"}
               </h2>
@@ -71,76 +97,159 @@ function AdminPage() {
               </button>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="שם הישיבה">
-                <Input value={draft.name} onChange={e => setDraft({ ...draft, name: e.target.value })} required maxLength={100} />
-              </Field>
-              <Field label="עיר">
-                <Input value={draft.city} onChange={e => setDraft({ ...draft, city: e.target.value })} required maxLength={50} />
-              </Field>
-              <Field label="מגזר / זרם">
-                <select
-                  value={draft.sector}
-                  onChange={e => setDraft({ ...draft, sector: e.target.value as Sector })}
-                  className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
-                >
-                  {SECTORS.map(s => <option key={s}>{s}</option>)}
-                </select>
-              </Field>
-              <Field label="מגדר">
-                <select
-                  value={draft.gender}
-                  onChange={e => setDraft({ ...draft, gender: e.target.value as Gender })}
-                  className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
-                >
-                  {GENDERS.map(g => <option key={g}>{g}</option>)}
-                </select>
-              </Field>
-              <div className="sm:col-span-2">
-                <Field label="תיאור">
-                  <Textarea
-                    value={draft.description}
-                    onChange={e => setDraft({ ...draft, description: e.target.value })}
-                    rows={3}
-                    maxLength={500}
-                  />
+            {/* Basic */}
+            <Section title="פרטים בסיסיים">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Field label="שם הישיבה">
+                  <Input value={draft.name} onChange={e => setDraft({ ...draft, name: e.target.value })} required maxLength={100} />
                 </Field>
-              </div>
-              <div className="sm:col-span-2">
-                <Field label="תמונה (קישור או העלאה מהמחשב)">
-                  <div className="space-y-2">
-                    <Input
-                      type="url"
-                      placeholder="https://..."
-                      value={draft.image ?? ""}
-                      onChange={e => setDraft({ ...draft, image: e.target.value })}
+                <Field label="עיר">
+                  <Input value={draft.city} onChange={e => setDraft({ ...draft, city: e.target.value })} required maxLength={50} />
+                </Field>
+                <Field label="מגזר / זרם">
+                  <select
+                    value={draft.sector}
+                    onChange={e => setDraft({ ...draft, sector: e.target.value as Sector })}
+                    className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
+                  >
+                    {SECTORS.map(s => <option key={s}>{s}</option>)}
+                  </select>
+                </Field>
+                <Field label="מגדר">
+                  <select
+                    value={draft.gender}
+                    onChange={e => setDraft({ ...draft, gender: e.target.value as Gender })}
+                    className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
+                  >
+                    {GENDERS.map(g => <option key={g}>{g}</option>)}
+                  </select>
+                </Field>
+                <Field label="טלפון">
+                  <Input dir="ltr" value={draft.phone ?? ""} onChange={e => setDraft({ ...draft, phone: e.target.value })} placeholder="02-1234567" />
+                </Field>
+                <Field label="אתר רשמי">
+                  <Input dir="ltr" type="url" value={draft.website ?? ""} onChange={e => setDraft({ ...draft, website: e.target.value })} placeholder="https://..." />
+                </Field>
+                <div className="sm:col-span-2">
+                  <Field label="תיאור">
+                    <Textarea
+                      value={draft.description}
+                      onChange={e => setDraft({ ...draft, description: e.target.value })}
+                      rows={4}
+                      maxLength={1000}
                     />
-                    <div className="flex items-center gap-3">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        className="block w-full text-sm text-muted-foreground file:ms-3 file:rounded-md file:border-0 file:bg-primary file:px-3 file:py-2 file:text-primary-foreground hover:file:bg-primary/90"
-                        onChange={e => {
-                          const f = e.target.files?.[0];
-                          if (!f) return;
-                          const r = new FileReader();
-                          r.onload = () => setDraft(d => ({ ...d, image: String(r.result) }));
-                          r.readAsDataURL(f);
-                        }}
-                      />
-                      {draft.image && (
-                        <button type="button" onClick={() => setDraft({ ...draft, image: "" })} className="text-sm text-muted-foreground hover:text-destructive">הסר</button>
-                      )}
-                    </div>
-                    {draft.image && (
-                      <img src={draft.image} alt="תצוגה מקדימה" className="mt-2 h-32 w-auto rounded-md border border-border object-cover" />
-                    )}
-                  </div>
-                </Field>
+                  </Field>
+                </div>
               </div>
-            </div>
+            </Section>
 
-            <div className="mt-5 flex gap-2">
+            {/* Main image */}
+            <Section title="תמונה ראשית">
+              <div className="space-y-2">
+                <Input
+                  type="url"
+                  placeholder="קישור לתמונה https://..."
+                  value={draft.image ?? ""}
+                  onChange={e => setDraft({ ...draft, image: e.target.value })}
+                />
+                <div className="flex items-center gap-3">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="block w-full text-sm text-muted-foreground file:ms-3 file:rounded-md file:border-0 file:bg-primary file:px-3 file:py-2 file:text-primary-foreground hover:file:bg-primary/90"
+                    onChange={async e => {
+                      const f = e.target.files?.[0];
+                      if (!f) return;
+                      const url = await fileToDataUrl(f);
+                      setDraft(d => ({ ...d, image: url }));
+                    }}
+                  />
+                  {draft.image && (
+                    <button type="button" onClick={() => setDraft({ ...draft, image: "" })} className="text-sm text-muted-foreground hover:text-destructive">הסר</button>
+                  )}
+                </div>
+                {draft.image && (
+                  <img src={draft.image} alt="תצוגה מקדימה" className="mt-2 h-40 w-auto rounded-md border border-border object-cover" />
+                )}
+              </div>
+            </Section>
+
+            {/* Gallery */}
+            <Section title="גלריית תמונות">
+              <label className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border bg-muted/30 py-6 text-sm text-muted-foreground hover:border-primary hover:text-primary">
+                <Upload className="h-4 w-4" />
+                <span>בחירת תמונות מהמחשב (ניתן לבחור כמה)</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  onChange={e => { addGalleryFiles(e.target.files); e.target.value = ""; }}
+                />
+              </label>
+              {(draft.gallery ?? []).length > 0 && (
+                <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                  {(draft.gallery ?? []).map((src, i) => (
+                    <div key={i} className="group relative overflow-hidden rounded-md border border-border">
+                      <img src={src} alt={`גלריה ${i + 1}`} className="h-28 w-full object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => removeGalleryAt(i)}
+                        className="absolute top-1 end-1 rounded-full bg-black/60 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100"
+                        aria-label="הסר תמונה"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </Section>
+
+            {/* Staff */}
+            <Section title="רבנים וצוות">
+              <div className="space-y-3">
+                {(draft.staff ?? []).map(s => (
+                  <div key={s.id} className="rounded-lg border border-border bg-background p-3">
+                    <div className="flex items-start gap-3">
+                      <div className="shrink-0">
+                        {s.image ? (
+                          <img src={s.image} alt={s.name || "צוות"} className="h-16 w-16 rounded-full object-cover" />
+                        ) : (
+                          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted text-muted-foreground">
+                            <UserPlus className="h-5 w-5" />
+                          </div>
+                        )}
+                      </div>
+                      <div className="grid flex-1 gap-2 sm:grid-cols-2">
+                        <Input placeholder="שם" value={s.name} onChange={e => updateStaff(s.id, { name: e.target.value })} />
+                        <Input placeholder="תפקיד (לא חובה)" value={s.role ?? ""} onChange={e => updateStaff(s.id, { role: e.target.value })} />
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="col-span-full block w-full text-xs text-muted-foreground file:ms-2 file:rounded-md file:border-0 file:bg-secondary file:px-2 file:py-1.5 file:text-secondary-foreground"
+                          onChange={async e => {
+                            const f = e.target.files?.[0];
+                            if (!f) return;
+                            const url = await fileToDataUrl(f);
+                            updateStaff(s.id, { image: url });
+                            e.target.value = "";
+                          }}
+                        />
+                      </div>
+                      <button type="button" onClick={() => removeStaff(s.id)} className="rounded-md p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive" aria-label="הסר">
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+                <Button type="button" variant="outline" onClick={addStaff}>
+                  <Plus className="ms-1 h-4 w-4" /> הוספת רב / מורה
+                </Button>
+              </div>
+            </Section>
+
+            <div className="flex gap-2">
               <Button type="submit">{editing ? "שמירה" : "הוספה"}</Button>
               <Button type="button" variant="outline" onClick={cancel}>ביטול</Button>
             </div>
@@ -188,6 +297,14 @@ function AdminPage() {
   );
 }
 
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="rounded-lg border border-border bg-background/50 p-4">
+      <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-muted-foreground">{title}</h3>
+      {children}
+    </div>
+  );
+}
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
