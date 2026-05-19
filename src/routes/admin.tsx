@@ -106,6 +106,38 @@ function AdminPage() {
                   />
                 </Field>
               </div>
+              <div className="sm:col-span-2">
+                <Field label="תמונה (קישור או העלאה מהמחשב)">
+                  <div className="space-y-2">
+                    <Input
+                      type="url"
+                      placeholder="https://..."
+                      value={draft.image ?? ""}
+                      onChange={e => setDraft({ ...draft, image: e.target.value })}
+                    />
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="block w-full text-sm text-muted-foreground file:ms-3 file:rounded-md file:border-0 file:bg-primary file:px-3 file:py-2 file:text-primary-foreground hover:file:bg-primary/90"
+                        onChange={e => {
+                          const f = e.target.files?.[0];
+                          if (!f) return;
+                          const r = new FileReader();
+                          r.onload = () => setDraft(d => ({ ...d, image: String(r.result) }));
+                          r.readAsDataURL(f);
+                        }}
+                      />
+                      {draft.image && (
+                        <button type="button" onClick={() => setDraft({ ...draft, image: "" })} className="text-sm text-muted-foreground hover:text-destructive">הסר</button>
+                      )}
+                    </div>
+                    {draft.image && (
+                      <img src={draft.image} alt="תצוגה מקדימה" className="mt-2 h-32 w-auto rounded-md border border-border object-cover" />
+                    )}
+                  </div>
+                </Field>
+              </div>
             </div>
 
             <div className="mt-5 flex gap-2">
