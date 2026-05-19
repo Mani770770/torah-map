@@ -68,15 +68,20 @@ function HomePage() {
           {featured.map((y, i) => (
             <Link
               key={y.id}
-              to="/yeshivot"
+              to="/yeshivot/$id"
+              params={{ id: y.id }}
               className="group overflow-hidden rounded-xl border border-border bg-card transition-all hover:-translate-y-1 hover:shadow-lg"
             >
-              <div
-                className="flex h-40 items-center justify-center bg-gradient-to-br from-primary/90 to-primary text-primary-foreground"
-                style={{ filter: `hue-rotate(${i * 12}deg)` }}
-              >
-                <BookIcon />
-              </div>
+              {y.image ? (
+                <img src={y.image} alt={y.name} className="h-40 w-full object-cover" />
+              ) : (
+                <div
+                  className="flex h-40 items-center justify-center bg-gradient-to-br from-primary/90 to-primary text-primary-foreground"
+                  style={{ filter: `hue-rotate(${i * 12}deg)` }}
+                >
+                  <BookIcon />
+                </div>
+              )}
               <div className="p-5">
                 <h3 className="line-clamp-1 text-lg font-bold text-foreground group-hover:text-primary">
                   {y.name}
