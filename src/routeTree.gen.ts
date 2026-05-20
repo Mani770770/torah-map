@@ -9,11 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as YeshivotRouteImport } from './routes/yeshivot'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as YeshivotIndexRouteImport } from './routes/yeshivot.index'
 import { Route as YeshivotIdRouteImport } from './routes/yeshivot.$id'
 
+const YeshivotRoute = YeshivotRouteImport.update({
+  id: '/yeshivot',
+  path: '/yeshivot',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -25,19 +31,20 @@ const IndexRoute = IndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const YeshivotIndexRoute = YeshivotIndexRouteImport.update({
-  id: '/yeshivot/',
-  path: '/yeshivot/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => YeshivotRoute,
 } as any)
 const YeshivotIdRoute = YeshivotIdRouteImport.update({
-  id: '/yeshivot/$id',
-  path: '/yeshivot/$id',
-  getParentRoute: () => rootRouteImport,
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => YeshivotRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/yeshivot': typeof YeshivotRouteWithChildren
   '/yeshivot/$id': typeof YeshivotIdRoute
   '/yeshivot/': typeof YeshivotIndexRoute
 }
@@ -51,26 +58,33 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/yeshivot': typeof YeshivotRouteWithChildren
   '/yeshivot/$id': typeof YeshivotIdRoute
   '/yeshivot/': typeof YeshivotIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/yeshivot/$id' | '/yeshivot/'
+  fullPaths: '/' | '/admin' | '/yeshivot' | '/yeshivot/$id' | '/yeshivot/'
   fileRoutesByTo: FileRoutesByTo
   to: '/' | '/admin' | '/yeshivot/$id' | '/yeshivot'
-  id: '__root__' | '/' | '/admin' | '/yeshivot/$id' | '/yeshivot/'
+  id: '__root__' | '/' | '/admin' | '/yeshivot' | '/yeshivot/$id' | '/yeshivot/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
-  YeshivotIdRoute: typeof YeshivotIdRoute
-  YeshivotIndexRoute: typeof YeshivotIndexRoute
+  YeshivotRoute: typeof YeshivotRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/yeshivot': {
+      id: '/yeshivot'
+      path: '/yeshivot'
+      fullPath: '/yeshivot'
+      preLoaderRoute: typeof YeshivotRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -87,26 +101,39 @@ declare module '@tanstack/react-router' {
     }
     '/yeshivot/': {
       id: '/yeshivot/'
-      path: '/yeshivot'
+      path: '/'
       fullPath: '/yeshivot/'
       preLoaderRoute: typeof YeshivotIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof YeshivotRoute
     }
     '/yeshivot/$id': {
       id: '/yeshivot/$id'
-      path: '/yeshivot/$id'
+      path: '/$id'
       fullPath: '/yeshivot/$id'
       preLoaderRoute: typeof YeshivotIdRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof YeshivotRoute
     }
   }
 }
 
+interface YeshivotRouteChildren {
+  YeshivotIdRoute: typeof YeshivotIdRoute
+  YeshivotIndexRoute: typeof YeshivotIndexRoute
+}
+
+const YeshivotRouteChildren: YeshivotRouteChildren = {
+  YeshivotIdRoute: YeshivotIdRoute,
+  YeshivotIndexRoute: YeshivotIndexRoute,
+}
+
+const YeshivotRouteWithChildren = YeshivotRoute._addFileChildren(
+  YeshivotRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
-  YeshivotIdRoute: YeshivotIdRoute,
-  YeshivotIndexRoute: YeshivotIndexRoute,
+  YeshivotRoute: YeshivotRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
