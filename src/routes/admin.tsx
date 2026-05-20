@@ -20,7 +20,8 @@ export const Route = createFileRoute("/admin")({
 type Draft = Omit<Yeshiva, "id">;
 const empty: Draft = {
   name: "", sector: "ליטאי", gender: "בנים", city: "", description: "",
-  image: "", phone: "", website: "", gallery: [], staff: [],
+  image: "", phone: "", website: "", ages: "", dorm: false, type: "",
+  gallery: [], staff: [],
 };
 
 function fileToDataUrl(f: File): Promise<string> {
