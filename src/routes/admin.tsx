@@ -131,6 +131,23 @@ function AdminPage() {
                 <Field label="אתר רשמי">
                   <Input dir="ltr" type="url" value={draft.website ?? ""} onChange={e => setDraft({ ...draft, website: e.target.value })} placeholder="https://..." />
                 </Field>
+                <Field label="גילאים">
+                  <Input value={draft.ages ?? ""} onChange={e => setDraft({ ...draft, ages: e.target.value })} placeholder="לדוגמה: 14-18" />
+                </Field>
+                <Field label="סוג ישיבה">
+                  <Input value={draft.type ?? ""} onChange={e => setDraft({ ...draft, type: e.target.value })} placeholder="ישיבה קטנה / גדולה / הסדר וכו'" />
+                </Field>
+                <div className="sm:col-span-2">
+                  <label className="inline-flex items-center gap-2 text-sm font-medium text-foreground">
+                    <input
+                      type="checkbox"
+                      checked={!!draft.dorm}
+                      onChange={e => setDraft({ ...draft, dorm: e.target.checked })}
+                      className="h-4 w-4 rounded border-input"
+                    />
+                    כוללת פנימייה
+                  </label>
+                </div>
                 <div className="sm:col-span-2">
                   <Field label="תיאור">
                     <Textarea
