@@ -9,16 +9,11 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as YeshivotRouteImport } from './routes/yeshivot'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as YeshivotIndexRouteImport } from './routes/yeshivot.index'
 import { Route as YeshivotIdRouteImport } from './routes/yeshivot.$id'
 
-const YeshivotRoute = YeshivotRouteImport.update({
-  id: '/yeshivot',
-  path: '/yeshivot',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -29,54 +24,53 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const YeshivotIndexRoute = YeshivotIndexRouteImport.update({
+  id: '/yeshivot/',
+  path: '/yeshivot/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const YeshivotIdRoute = YeshivotIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => YeshivotRoute,
+  id: '/yeshivot/$id',
+  path: '/yeshivot/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
-  '/yeshivot': typeof YeshivotRouteWithChildren
   '/yeshivot/$id': typeof YeshivotIdRoute
+  '/yeshivot/': typeof YeshivotIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
-  '/yeshivot': typeof YeshivotRouteWithChildren
   '/yeshivot/$id': typeof YeshivotIdRoute
+  '/yeshivot': typeof YeshivotIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
-  '/yeshivot': typeof YeshivotRouteWithChildren
   '/yeshivot/$id': typeof YeshivotIdRoute
+  '/yeshivot/': typeof YeshivotIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/yeshivot' | '/yeshivot/$id'
+  fullPaths: '/' | '/admin' | '/yeshivot/$id' | '/yeshivot/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/yeshivot' | '/yeshivot/$id'
-  id: '__root__' | '/' | '/admin' | '/yeshivot' | '/yeshivot/$id'
+  to: '/' | '/admin' | '/yeshivot/$id' | '/yeshivot'
+  id: '__root__' | '/' | '/admin' | '/yeshivot/$id' | '/yeshivot/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
-  YeshivotRoute: typeof YeshivotRouteWithChildren
+  YeshivotIdRoute: typeof YeshivotIdRoute
+  YeshivotIndexRoute: typeof YeshivotIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/yeshivot': {
-      id: '/yeshivot'
-      path: '/yeshivot'
-      fullPath: '/yeshivot'
-      preLoaderRoute: typeof YeshivotRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -91,33 +85,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/yeshivot/': {
+      id: '/yeshivot/'
+      path: '/yeshivot'
+      fullPath: '/yeshivot/'
+      preLoaderRoute: typeof YeshivotIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/yeshivot/$id': {
       id: '/yeshivot/$id'
-      path: '/$id'
+      path: '/yeshivot/$id'
       fullPath: '/yeshivot/$id'
       preLoaderRoute: typeof YeshivotIdRouteImport
-      parentRoute: typeof YeshivotRoute
+      parentRoute: typeof rootRouteImport
     }
   }
 }
 
-interface YeshivotRouteChildren {
-  YeshivotIdRoute: typeof YeshivotIdRoute
-}
-
-const YeshivotRouteChildren: YeshivotRouteChildren = {
-  YeshivotIdRoute: YeshivotIdRoute,
-}
-
-const YeshivotRouteWithChildren = YeshivotRoute._addFileChildren(
-  YeshivotRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
-  YeshivotRoute: YeshivotRouteWithChildren,
+  YeshivotIdRoute: YeshivotIdRoute,
+  YeshivotIndexRoute: YeshivotIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
