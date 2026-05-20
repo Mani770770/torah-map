@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useYeshivot, SECTORS, GENDERS, type Sector, type Gender } from "@/lib/yeshivot-store";
 
-export const Route = createFileRoute("/yeshivot")({
+export const Route = createFileRoute("/yeshivot/")({
   head: () => ({
     meta: [
       { title: "אינדקס הישיבות — חיפוש וסינון" },
