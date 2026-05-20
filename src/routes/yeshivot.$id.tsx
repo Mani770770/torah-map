@@ -78,7 +78,9 @@ function YeshivaDetailPage() {
                 <Info label="מגזר / זרם" value={y.sector} />
                 <Info label="מגדר" value={y.gender} />
                 <Info label="עיר" value={y.city} />
-                <Info label="סוג מוסד" value="ישיבה" />
+                <Info label="סוג מוסד" value={y.type || "ישיבה"} />
+                {y.ages && <Info label="גילאים" value={y.ages} />}
+                <Info label="פנימייה" value={y.dorm ? "כן" : "לא"} />
               </dl>
             </div>
           </div>
