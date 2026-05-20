@@ -20,6 +20,9 @@ export interface Yeshiva {
   image?: string;
   phone?: string;
   website?: string;
+  ages?: string;
+  dorm?: boolean;
+  type?: string;
   gallery?: string[];
   staff?: StaffMember[];
 }
