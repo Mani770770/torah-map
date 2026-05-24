@@ -13,18 +13,25 @@ export const Route = createFileRoute("/yeshivot/")({
       { name: "description", content: "רשימת כל הישיבות בישראל עם סינון לפי מגדר, מגזר ועיר." },
     ],
   }),
-  validateSearch: (s: Record<string, unknown>) => ({ q: (s.q as string) || "" }),
+  validateSearch: (s: Record<string, unknown>) => ({
+    q: (s.q as string) || "",
+    gender: (s.gender as Gender) || null,
+    sector: (s.sector as Sector) || null,
+    city: (s.city as string) || null,
+  }),
   component: YeshivotPage,
 });
 
 function YeshivotPage() {
-  const { q: initialQ } = Route.useSearch();
+  const navigate = Route.useNavigate();
+  const search = Route.useSearch();
   const { list } = useYeshivot();
-  const [q, setQ] = useState(initialQ);
-  const [gender, setGender] = useState<Gender | null>(null);
-  const [sector, setSector] = useState<Sector | null>(null);
-  const [city, setCity] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
+
+  const q = search.q || "";
+  const gender = search.gender;
+  const sector = search.sector;
+  const city = search.city;
 
   const cities = useMemo(() => Array.from(new Set(list.map(y => y.city))).sort(), [list]);
 
@@ -39,7 +46,11 @@ function YeshivotPage() {
     });
   }, [list, q, gender, sector, city]);
 
-  const clear = () => { setGender(null); setSector(null); setCity(null); setQ(""); };
+  const setQ = (val: string) => navigate({ search: (prev: typeof search) => ({ ...prev, q: val }) });
+  const setGender = (val: Gender | null) => navigate({ search: (prev: typeof search) => ({ ...prev, gender: val }) });
+  const setSector = (val: Sector | null) => navigate({ search: (prev: typeof search) => ({ ...prev, sector: val }) });
+  const setCity = (val: string | null) => navigate({ search: (prev: typeof search) => ({ ...prev, city: val }) });
+  const clear = () => navigate({ search: { q: "", gender: null, sector: null, city: null } });
   const activeCount = [gender, sector, city].filter(Boolean).length;
 
   return (
@@ -120,6 +131,7 @@ function YeshivotPage() {
                     key={y.id}
                     to="/yeshivot/$id"
                     params={{ id: y.id }}
+                    search={search}
                     className="group overflow-hidden rounded-xl border border-border bg-card transition-all hover:-translate-y-0.5 hover:shadow-lg"
                   >
                     {y.image ? (
