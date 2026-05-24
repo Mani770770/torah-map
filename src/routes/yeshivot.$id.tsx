@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useRef } from "react";
 import { MapPin, Users, Phone, Globe, ArrowRight, ChevronRight, ChevronLeft, BookOpen, Search } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
+import { PageTransition } from "@/components/page-transition";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useYeshiva, type Sector, type Gender } from "@/lib/yeshivot-store";
@@ -56,7 +57,8 @@ function YeshivaDetailPage() {
     <div className="min-h-screen bg-background">
       <SiteHeader />
 
-      <div className="mx-auto max-w-6xl px-4 py-6 animate-fade-in">
+      <PageTransition>
+      <div className="mx-auto max-w-6xl px-4 py-6">
         {/* Quick search bar */}
         <div className="mb-4 rounded-xl border border-border bg-card p-3 shadow-sm">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
@@ -221,6 +223,7 @@ function YeshivaDetailPage() {
           </Button>
         </div>
       </div>
+      </PageTransition>
     </div>
   );
 }
