@@ -215,7 +215,7 @@ function YeshivaDetailPage() {
 
         <div className="mt-10 flex justify-center">
           <Button asChild variant="outline" size="lg" className="inline-flex items-center gap-2 rounded-full border-border hover:bg-primary/5 hover:text-primary hover:border-primary/30">
-            <Link to="/yeshivot">
+            <Link to="/yeshivot/" search={backSearch}>
               <ArrowRight className="h-5 w-5" /> חזרה לאינדקס
             </Link>
           </Button>
