@@ -163,6 +163,7 @@ function YeshivotPage() {
           </main>
         </div>
       </div>
+      </PageTransition>
     </div>
   );
 }
