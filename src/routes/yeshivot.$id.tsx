@@ -57,7 +57,8 @@ function YeshivaDetailPage() {
     <div className="min-h-screen bg-background">
       <SiteHeader />
 
-      <div className="mx-auto max-w-6xl px-4 py-6 animate-fade-in">
+      <PageTransition>
+      <div className="mx-auto max-w-6xl px-4 py-6">
         {/* Quick search bar */}
         <div className="mb-4 rounded-xl border border-border bg-card p-3 shadow-sm">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
