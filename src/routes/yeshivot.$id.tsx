@@ -27,6 +27,7 @@ function YeshivaDetailPage() {
   const y = useYeshiva(id);
   const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement>(null);
+  const search = Route.useSearch();
 
   if (!y) {
     return (
@@ -34,7 +35,7 @@ function YeshivaDetailPage() {
         <SiteHeader />
         <div className="mx-auto max-w-3xl px-4 py-20 text-center">
           <h1 className="text-2xl font-bold text-foreground">הישיבה לא נמצאה</h1>
-          <Button className="mt-6" onClick={() => navigate({ to: "/yeshivot" })}>חזרה לאינדקס</Button>
+          <Button className="mt-6" onClick={() => navigate({ to: "/yeshivot", search: { q: search.q || "", gender: search.gender, sector: search.sector, city: search.city } })}>חזרה לאינדקס</Button>
         </div>
       </div>
     );
@@ -44,16 +45,55 @@ function YeshivaDetailPage() {
     scrollRef.current?.scrollBy({ left: dir * 320, behavior: "smooth" });
   };
 
+  const backSearch = { q: search.q || "", gender: search.gender, sector: search.sector, city: search.city };
+  const activeFilters = [
+    search.gender ? { label: search.gender, key: "gender" } : null,
+    search.sector ? { label: search.sector, key: "sector" } : null,
+    search.city ? { label: search.city, key: "city" } : null,
+  ].filter(Boolean) as { label: string; key: string }[];
+
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
 
       <div className="mx-auto max-w-6xl px-4 py-6 animate-fade-in">
-        <Button asChild variant="outline" size="sm" className="mb-4 inline-flex items-center gap-1 rounded-full border-border hover:bg-primary/5 hover:text-primary hover:border-primary/30">
-          <Link to="/yeshivot">
-            <ArrowRight className="h-4 w-4" /> חזרה לאינדקס
-          </Link>
-        </Button>
+        {/* Quick search bar */}
+        <div className="mb-4 rounded-xl border border-border bg-card p-3 shadow-sm">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <div className="relative flex-1">
+              <Search className="pointer-events-none absolute end-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={search.q || ""}
+                onChange={e => {
+                  const val = e.target.value;
+                  navigate({ to: ".", search: (prev: typeof search) => ({ ...prev, q: val }) });
+                }}
+                onKeyDown={e => {
+                  if (e.key === "Enter") {
+                    navigate({ to: "/yeshivot/", search: backSearch });
+                  }
+                }}
+                placeholder="חיפוש מהיר — לחץ Enter לחזור לאינדקס..."
+                className="pe-9"
+              />
+            </div>
+            {activeFilters.length > 0 && (
+              <div className="flex flex-wrap items-center gap-1.5">
+                <span className="text-xs text-muted-foreground">סינון פעיל:</span>
+                {activeFilters.map(f => (
+                  <span key={f.key} className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                    {f.label}
+                  </span>
+                ))}
+              </div>
+            )}
+            <Button asChild variant="outline" size="sm" className="inline-flex items-center gap-1 rounded-full border-border hover:bg-primary/5 hover:text-primary hover:border-primary/30 shrink-0">
+              <Link to="/yeshivot/" search={backSearch}>
+                <ArrowRight className="h-4 w-4" /> חזרה לאינדקס
+              </Link>
+            </Button>
+          </div>
+        </div>
 
         {/* Hero */}
         <div className="relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-primary to-primary/80 shadow-xl">
