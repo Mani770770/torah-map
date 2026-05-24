@@ -1,9 +1,10 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useRef, useState } from "react";
-import { MapPin, Users, Phone, Globe, ArrowRight, ChevronRight, ChevronLeft, BookOpen } from "lucide-react";
+import { useRef } from "react";
+import { MapPin, Users, Phone, Globe, ArrowRight, ChevronRight, ChevronLeft, BookOpen, Search, X } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
-import { useYeshiva } from "@/lib/yeshivot-store";
+import { Input } from "@/components/ui/input";
+import { useYeshiva, type Sector, type Gender } from "@/lib/yeshivot-store";
 
 export const Route = createFileRoute("/yeshivot/$id")({
   head: ({ params }) => ({
@@ -11,6 +12,12 @@ export const Route = createFileRoute("/yeshivot/$id")({
       { title: `ישיבה — פרטים | ${params.id}` },
       { name: "description", content: "פרטים מלאים על הישיבה: מגזר, מיקום, רבנים, גלריה ופרטי קשר." },
     ],
+  }),
+  validateSearch: (s: Record<string, unknown>) => ({
+    q: (s.q as string) || "",
+    gender: (s.gender as Gender) || null,
+    sector: (s.sector as Sector) || null,
+    city: (s.city as string) || null,
   }),
   component: YeshivaDetailPage,
 });
