@@ -46,10 +46,10 @@ function YeshivotPage() {
     });
   }, [list, q, gender, sector, city]);
 
-  const setQ = (val: string) => navigate({ search: prev => ({ ...prev, q: val }) });
-  const setGender = (val: Gender | null) => navigate({ search: prev => ({ ...prev, gender: val }) });
-  const setSector = (val: Sector | null) => navigate({ search: prev => ({ ...prev, sector: val }) });
-  const setCity = (val: string | null) => navigate({ search: prev => ({ ...prev, city: val }) });
+  const setQ = (val: string) => navigate({ search: (prev: typeof search) => ({ ...prev, q: val }) });
+  const setGender = (val: Gender | null) => navigate({ search: (prev: typeof search) => ({ ...prev, gender: val }) });
+  const setSector = (val: Sector | null) => navigate({ search: (prev: typeof search) => ({ ...prev, sector: val }) });
+  const setCity = (val: string | null) => navigate({ search: (prev: typeof search) => ({ ...prev, city: val }) });
   const clear = () => navigate({ search: { q: "", gender: null, sector: null, city: null } });
   const activeCount = [gender, sector, city].filter(Boolean).length;
 
