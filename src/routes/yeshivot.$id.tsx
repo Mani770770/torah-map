@@ -223,6 +223,7 @@ function YeshivaDetailPage() {
           </Button>
         </div>
       </div>
+      </PageTransition>
     </div>
   );
 }
