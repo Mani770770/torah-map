@@ -42,9 +42,11 @@ function YeshivaDetailPage() {
       <SiteHeader />
 
       <div className="mx-auto max-w-6xl px-4 py-6 animate-fade-in">
-        <Link to="/yeshivot" className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary">
-          <ArrowRight className="h-4 w-4" /> חזרה לאינדקס
-        </Link>
+        <Button asChild variant="outline" size="sm" className="mb-4 inline-flex items-center gap-1 rounded-full border-border hover:bg-primary/5 hover:text-primary hover:border-primary/30">
+          <Link to="/yeshivot">
+            <ArrowRight className="h-4 w-4" /> חזרה לאינדקס
+          </Link>
+        </Button>
 
         {/* Hero */}
         <div className="relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-primary to-primary/80 shadow-xl">
