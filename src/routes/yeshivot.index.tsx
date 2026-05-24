@@ -13,7 +13,12 @@ export const Route = createFileRoute("/yeshivot/")({
       { name: "description", content: "רשימת כל הישיבות בישראל עם סינון לפי מגדר, מגזר ועיר." },
     ],
   }),
-  validateSearch: (s: Record<string, unknown>) => ({ q: (s.q as string) || "" }),
+  validateSearch: (s: Record<string, unknown>) => ({
+    q: (s.q as string) || "",
+    gender: (s.gender as Gender) || null,
+    sector: (s.sector as Sector) || null,
+    city: (s.city as string) || null,
+  }),
   component: YeshivotPage,
 });
 
