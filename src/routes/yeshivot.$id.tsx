@@ -196,7 +196,7 @@ function YeshivaDetailPage() {
               </div>
             </div>
             <div ref={scrollRef} className="flex gap-4 overflow-x-auto scroll-smooth pb-2 [scrollbar-width:thin]">
-              {y.gallery.map((src, i) => (
+              {y.gallery.map((src: string, i: number) => (
                 <img
                   key={i}
                   src={src}
@@ -213,7 +213,7 @@ function YeshivaDetailPage() {
           <section className="mt-10">
             <h2 className="mb-4 text-xl font-bold text-foreground">צוות הישיבה</h2>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {y.staff.map(s => (
+              {y.staff.map((s: StaffMember) => (
                 <div key={s.id} className="flex items-center gap-4 rounded-xl border border-border bg-card p-4 transition-all hover:-translate-y-0.5 hover:shadow-md">
                   {s.image ? (
                     <img src={s.image} alt={s.name} className="h-16 w-16 rounded-full object-cover" />
