@@ -162,6 +162,8 @@ function YeshivotPage() {
                     to="/yeshivot/$id"
                     params={{ id: y.id }}
                     search={search}
+                    data-yeshiva-id={y.id}
+                    onClick={() => saveScroll(y.id)}
                     className="group overflow-hidden rounded-xl border border-border bg-card transition-all hover:-translate-y-0.5 hover:shadow-lg"
                   >
                     {y.image ? (
