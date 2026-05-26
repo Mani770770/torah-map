@@ -54,6 +54,34 @@ function YeshivotPage() {
   const clear = () => navigate({ search: { q: "", gender: null, sector: null, city: null } });
   const activeCount = [gender, sector, city].filter(Boolean).length;
 
+  // Restore scroll position when returning from a detail page
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const saved = sessionStorage.getItem("yeshivot:scroll");
+    const lastId = sessionStorage.getItem("yeshivot:lastId");
+    if (saved) {
+      const y = parseInt(saved, 10);
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: y, behavior: "auto" });
+        if (lastId) {
+          const el = document.querySelector(`[data-yeshiva-id="${lastId}"]`) as HTMLElement | null;
+          if (el) {
+            el.classList.add("ring-2", "ring-primary/60");
+            setTimeout(() => el.classList.remove("ring-2", "ring-primary/60"), 1500);
+          }
+        }
+      });
+      sessionStorage.removeItem("yeshivot:scroll");
+      sessionStorage.removeItem("yeshivot:lastId");
+    }
+  }, [filtered.length]);
+
+  const saveScroll = (id: string) => {
+    if (typeof window === "undefined") return;
+    sessionStorage.setItem("yeshivot:scroll", String(window.scrollY));
+    sessionStorage.setItem("yeshivot:lastId", id);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
