@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MapPin, Users, Search, Filter, X, BookOpen } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { PageTransition } from "@/components/page-transition";
