@@ -5,7 +5,18 @@ import { SiteHeader } from "@/components/site-header";
 import { PageTransition } from "@/components/page-transition";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useYeshiva, type Sector, type Gender } from "@/lib/yeshivot-store";
+import { YeshivaDetailSkeleton } from "@/components/yeshiva-detail-skeleton";
+import { type Sector, type Gender, type Yeshiva, type StaffMember } from "@/lib/yeshivot-store";
+
+function readYeshivot(): Yeshiva[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem("yeshivot.v1");
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
 
 export const Route = createFileRoute("/yeshivot/$id")({
   head: ({ params }) => ({
@@ -20,12 +31,18 @@ export const Route = createFileRoute("/yeshivot/$id")({
     sector: (s.sector as Sector) || null,
     city: (s.city as string) || null,
   }),
+  loader: async ({ params }) => {
+    // Small delay so skeleton is visible and transition feels smooth
+    await new Promise(r => setTimeout(r, 250));
+    const list = readYeshivot();
+    return { yeshiva: list.find(y => y.id === params.id) || null };
+  },
+  pendingComponent: YeshivaDetailSkeleton,
   component: YeshivaDetailPage,
 });
 
 function YeshivaDetailPage() {
-  const { id } = Route.useParams();
-  const y = useYeshiva(id);
+  const { yeshiva: y } = Route.useLoaderData();
   const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement>(null);
   const search = Route.useSearch();
@@ -179,7 +196,7 @@ function YeshivaDetailPage() {
               </div>
             </div>
             <div ref={scrollRef} className="flex gap-4 overflow-x-auto scroll-smooth pb-2 [scrollbar-width:thin]">
-              {y.gallery.map((src, i) => (
+              {y.gallery.map((src: string, i: number) => (
                 <img
                   key={i}
                   src={src}
@@ -196,7 +213,7 @@ function YeshivaDetailPage() {
           <section className="mt-10">
             <h2 className="mb-4 text-xl font-bold text-foreground">צוות הישיבה</h2>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {y.staff.map(s => (
+              {y.staff.map((s: StaffMember) => (
                 <div key={s.id} className="flex items-center gap-4 rounded-xl border border-border bg-card p-4 transition-all hover:-translate-y-0.5 hover:shadow-md">
                   {s.image ? (
                     <img src={s.image} alt={s.name} className="h-16 w-16 rounded-full object-cover" />
