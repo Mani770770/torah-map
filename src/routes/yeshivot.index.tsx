@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MapPin, Users, Search, Filter, X, BookOpen } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { PageTransition } from "@/components/page-transition";
@@ -53,6 +53,34 @@ function YeshivotPage() {
   const setCity = (val: string | null) => navigate({ search: (prev: typeof search) => ({ ...prev, city: val }) });
   const clear = () => navigate({ search: { q: "", gender: null, sector: null, city: null } });
   const activeCount = [gender, sector, city].filter(Boolean).length;
+
+  // Restore scroll position when returning from a detail page
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const saved = sessionStorage.getItem("yeshivot:scroll");
+    const lastId = sessionStorage.getItem("yeshivot:lastId");
+    if (saved) {
+      const y = parseInt(saved, 10);
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: y, behavior: "auto" });
+        if (lastId) {
+          const el = document.querySelector(`[data-yeshiva-id="${lastId}"]`) as HTMLElement | null;
+          if (el) {
+            el.classList.add("ring-2", "ring-primary/60");
+            setTimeout(() => el.classList.remove("ring-2", "ring-primary/60"), 1500);
+          }
+        }
+      });
+      sessionStorage.removeItem("yeshivot:scroll");
+      sessionStorage.removeItem("yeshivot:lastId");
+    }
+  }, [filtered.length]);
+
+  const saveScroll = (id: string) => {
+    if (typeof window === "undefined") return;
+    sessionStorage.setItem("yeshivot:scroll", String(window.scrollY));
+    sessionStorage.setItem("yeshivot:lastId", id);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -134,6 +162,8 @@ function YeshivotPage() {
                     to="/yeshivot/$id"
                     params={{ id: y.id }}
                     search={search}
+                    data-yeshiva-id={y.id}
+                    onClick={() => saveScroll(y.id)}
                     className="group overflow-hidden rounded-xl border border-border bg-card transition-all hover:-translate-y-0.5 hover:shadow-lg"
                   >
                     {y.image ? (
