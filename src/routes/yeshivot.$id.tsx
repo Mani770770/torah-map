@@ -42,8 +42,7 @@ export const Route = createFileRoute("/yeshivot/$id")({
 });
 
 function YeshivaDetailPage() {
-  const { id } = Route.useParams();
-  const y = useYeshiva(id);
+  const { yeshiva: y } = Route.useLoaderData();
   const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement>(null);
   const search = Route.useSearch();
