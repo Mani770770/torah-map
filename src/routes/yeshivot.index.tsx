@@ -133,6 +133,16 @@ function YeshivotPage() {
               ))}
             </FilterGroup>
 
+            <FilterGroup label="פנימייה">
+              <Chip active={dorm === true} onClick={() => setDorm(dorm === true ? null : true)}>כן</Chip>
+              <Chip active={dorm === false} onClick={() => setDorm(dorm === false ? null : false)}>לא</Chip>
+            </FilterGroup>
+
+            <FilterGroup label="לימודי חול">
+              <Chip active={secularStudies === true} onClick={() => setSecularStudies(secularStudies === true ? null : true)}>כן</Chip>
+              <Chip active={secularStudies === false} onClick={() => setSecularStudies(secularStudies === false ? null : false)}>לא</Chip>
+            </FilterGroup>
+
             {activeCount > 0 && (
               <Button variant="outline" className="mt-4 w-full" onClick={clear}>נקה סינון</Button>
             )}
