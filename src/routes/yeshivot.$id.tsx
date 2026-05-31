@@ -6,7 +6,7 @@ import { PageTransition } from "@/components/page-transition";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { YeshivaDetailSkeleton } from "@/components/yeshiva-detail-skeleton";
-import { type Sector, type Gender, type Yeshiva, type StaffMember } from "@/lib/yeshivot-store";
+import { type Sector, type Gender, type Size, type Yeshiva, type StaffMember } from "@/lib/yeshivot-store";
 
 function readYeshivot(): Yeshiva[] {
   if (typeof window === "undefined") return [];
@@ -32,6 +32,7 @@ export const Route = createFileRoute("/yeshivot/$id")({
     city: (s.city as string) || null,
     dorm: typeof s.dorm === "boolean" ? s.dorm : null,
     secularStudies: typeof s.secularStudies === "boolean" ? s.secularStudies : null,
+    size: (s.size as Size) || null,
   }),
   loader: async ({ params }) => {
     // Small delay so skeleton is visible and transition feels smooth
@@ -65,13 +66,14 @@ function YeshivaDetailPage() {
     scrollRef.current?.scrollBy({ left: dir * 320, behavior: "smooth" });
   };
 
-  const backSearch = { q: search.q || "", gender: search.gender, sector: search.sector, city: search.city, dorm: search.dorm, secularStudies: search.secularStudies };
+  const backSearch = { q: search.q || "", gender: search.gender, sector: search.sector, city: search.city, dorm: search.dorm, secularStudies: search.secularStudies, size: search.size };
   const activeFilters = [
     search.gender ? { label: search.gender, key: "gender" } : null,
     search.sector ? { label: search.sector, key: "sector" } : null,
     search.city ? { label: search.city, key: "city" } : null,
     search.dorm === true ? { label: "פנימייה", key: "dorm" } : null,
     search.secularStudies === true ? { label: "לימודי חול", key: "secularStudies" } : null,
+    search.size ? { label: search.size, key: "size" } : null,
   ].filter(Boolean) as { label: string; key: string }[];
 
   return (
