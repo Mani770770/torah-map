@@ -73,6 +73,7 @@ function YeshivaDetailPage() {
     search.city ? { label: search.city, key: "city" } : null,
     search.dorm === true ? { label: "פנימייה", key: "dorm" } : null,
     search.secularStudies === true ? { label: "לימודי חול", key: "secularStudies" } : null,
+    search.size ? { label: search.size, key: "size" } : null,
   ].filter(Boolean) as { label: string; key: string }[];
 
   return (
