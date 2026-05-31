@@ -30,6 +30,8 @@ export const Route = createFileRoute("/yeshivot/$id")({
     gender: (s.gender as Gender) || null,
     sector: (s.sector as Sector) || null,
     city: (s.city as string) || null,
+    dorm: typeof s.dorm === "boolean" ? s.dorm : null,
+    secularStudies: typeof s.secularStudies === "boolean" ? s.secularStudies : null,
   }),
   loader: async ({ params }) => {
     // Small delay so skeleton is visible and transition feels smooth
