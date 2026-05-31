@@ -22,6 +22,7 @@ export interface Yeshiva {
   website?: string;
   ages?: string;
   dorm?: boolean;
+  secularStudies?: boolean;
   type?: string;
   gallery?: string[];
   staff?: StaffMember[];
