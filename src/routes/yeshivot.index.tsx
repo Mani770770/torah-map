@@ -5,7 +5,7 @@ import { SiteHeader } from "@/components/site-header";
 import { PageTransition } from "@/components/page-transition";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useYeshivot, SECTORS, GENDERS, type Sector, type Gender } from "@/lib/yeshivot-store";
+import { useYeshivot, SECTORS, GENDERS, SIZES, type Sector, type Gender, type Size } from "@/lib/yeshivot-store";
 
 export const Route = createFileRoute("/yeshivot/")({
   head: () => ({

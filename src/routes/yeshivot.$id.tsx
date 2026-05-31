@@ -6,7 +6,7 @@ import { PageTransition } from "@/components/page-transition";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { YeshivaDetailSkeleton } from "@/components/yeshiva-detail-skeleton";
-import { type Sector, type Gender, type Yeshiva, type StaffMember } from "@/lib/yeshivot-store";
+import { type Sector, type Gender, type Size, type Yeshiva, type StaffMember } from "@/lib/yeshivot-store";
 
 function readYeshivot(): Yeshiva[] {
   if (typeof window === "undefined") return [];
