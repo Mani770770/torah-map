@@ -30,6 +30,8 @@ export const Route = createFileRoute("/yeshivot/$id")({
     gender: (s.gender as Gender) || null,
     sector: (s.sector as Sector) || null,
     city: (s.city as string) || null,
+    dorm: typeof s.dorm === "boolean" ? s.dorm : null,
+    secularStudies: typeof s.secularStudies === "boolean" ? s.secularStudies : null,
   }),
   loader: async ({ params }) => {
     // Small delay so skeleton is visible and transition feels smooth
@@ -63,11 +65,13 @@ function YeshivaDetailPage() {
     scrollRef.current?.scrollBy({ left: dir * 320, behavior: "smooth" });
   };
 
-  const backSearch = { q: search.q || "", gender: search.gender, sector: search.sector, city: search.city };
+  const backSearch = { q: search.q || "", gender: search.gender, sector: search.sector, city: search.city, dorm: search.dorm, secularStudies: search.secularStudies };
   const activeFilters = [
     search.gender ? { label: search.gender, key: "gender" } : null,
     search.sector ? { label: search.sector, key: "sector" } : null,
     search.city ? { label: search.city, key: "city" } : null,
+    search.dorm === true ? { label: "פנימייה", key: "dorm" } : null,
+    search.secularStudies === true ? { label: "לימודי חול", key: "secularStudies" } : null,
   ].filter(Boolean) as { label: string; key: string }[];
 
   return (

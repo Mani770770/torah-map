@@ -19,6 +19,8 @@ export const Route = createFileRoute("/yeshivot/")({
     gender: (s.gender as Gender) || null,
     sector: (s.sector as Sector) || null,
     city: (s.city as string) || null,
+    dorm: typeof s.dorm === "boolean" ? s.dorm : null,
+    secularStudies: typeof s.secularStudies === "boolean" ? s.secularStudies : null,
   }),
   component: YeshivotPage,
 });
@@ -33,6 +35,8 @@ function YeshivotPage() {
   const gender = search.gender;
   const sector = search.sector;
   const city = search.city;
+  const dorm = search.dorm;
+  const secularStudies = search.secularStudies;
 
   const cities = useMemo(() => Array.from(new Set(list.map(y => y.city))).sort(), [list]);
 
@@ -42,17 +46,21 @@ function YeshivotPage() {
       if (gender && y.gender !== gender) return false;
       if (sector && y.sector !== sector) return false;
       if (city && y.city !== city) return false;
+      if (dorm !== null && y.dorm !== dorm) return false;
+      if (secularStudies !== null && y.secularStudies !== secularStudies) return false;
       if (term && ![y.name, y.city, y.sector, y.description].some(v => v.includes(term))) return false;
       return true;
     });
-  }, [list, q, gender, sector, city]);
+  }, [list, q, gender, sector, city, dorm, secularStudies]);
 
   const setQ = (val: string) => navigate({ search: (prev: typeof search) => ({ ...prev, q: val }) });
   const setGender = (val: Gender | null) => navigate({ search: (prev: typeof search) => ({ ...prev, gender: val }) });
   const setSector = (val: Sector | null) => navigate({ search: (prev: typeof search) => ({ ...prev, sector: val }) });
   const setCity = (val: string | null) => navigate({ search: (prev: typeof search) => ({ ...prev, city: val }) });
-  const clear = () => navigate({ search: { q: "", gender: null, sector: null, city: null } });
-  const activeCount = [gender, sector, city].filter(Boolean).length;
+  const setDorm = (val: boolean | null) => navigate({ search: (prev: typeof search) => ({ ...prev, dorm: val }) });
+  const setSecularStudies = (val: boolean | null) => navigate({ search: (prev: typeof search) => ({ ...prev, secularStudies: val }) });
+  const clear = () => navigate({ search: { q: "", gender: null, sector: null, city: null, dorm: null, secularStudies: null } });
+  const activeCount = [gender, sector, city, dorm, secularStudies].filter(v => v !== null && v !== "" && v !== undefined).length;
 
   // Restore scroll position when returning from a detail page
   useEffect(() => {
@@ -123,6 +131,16 @@ function YeshivotPage() {
               {cities.map(c => (
                 <Chip key={c} active={city === c} onClick={() => setCity(city === c ? null : c)}>{c}</Chip>
               ))}
+            </FilterGroup>
+
+            <FilterGroup label="פנימייה">
+              <Chip active={dorm === true} onClick={() => setDorm(dorm === true ? null : true)}>כן</Chip>
+              <Chip active={dorm === false} onClick={() => setDorm(dorm === false ? null : false)}>לא</Chip>
+            </FilterGroup>
+
+            <FilterGroup label="לימודי חול">
+              <Chip active={secularStudies === true} onClick={() => setSecularStudies(secularStudies === true ? null : true)}>כן</Chip>
+              <Chip active={secularStudies === false} onClick={() => setSecularStudies(secularStudies === false ? null : false)}>לא</Chip>
             </FilterGroup>
 
             {activeCount > 0 && (
