@@ -65,11 +65,13 @@ function YeshivaDetailPage() {
     scrollRef.current?.scrollBy({ left: dir * 320, behavior: "smooth" });
   };
 
-  const backSearch = { q: search.q || "", gender: search.gender, sector: search.sector, city: search.city };
+  const backSearch = { q: search.q || "", gender: search.gender, sector: search.sector, city: search.city, dorm: search.dorm, secularStudies: search.secularStudies };
   const activeFilters = [
     search.gender ? { label: search.gender, key: "gender" } : null,
     search.sector ? { label: search.sector, key: "sector" } : null,
     search.city ? { label: search.city, key: "city" } : null,
+    search.dorm === true ? { label: "פנימייה", key: "dorm" } : null,
+    search.secularStudies === true ? { label: "לימודי חול", key: "secularStudies" } : null,
   ].filter(Boolean) as { label: string; key: string }[];
 
   return (
