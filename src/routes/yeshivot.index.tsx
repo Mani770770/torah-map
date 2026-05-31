@@ -38,6 +38,7 @@ function YeshivotPage() {
   const city = search.city;
   const dorm = search.dorm;
   const secularStudies = search.secularStudies;
+  const size = search.size;
 
   const cities = useMemo(() => Array.from(new Set(list.map(y => y.city))).sort(), [list]);
 
@@ -49,10 +50,11 @@ function YeshivotPage() {
       if (city && y.city !== city) return false;
       if (dorm !== null && y.dorm !== dorm) return false;
       if (secularStudies !== null && y.secularStudies !== secularStudies) return false;
+      if (size && y.size !== size) return false;
       if (term && ![y.name, y.city, y.sector, y.description].some(v => v.includes(term))) return false;
       return true;
     });
-  }, [list, q, gender, sector, city, dorm, secularStudies]);
+  }, [list, q, gender, sector, city, dorm, secularStudies, size]);
 
   const setQ = (val: string) => navigate({ search: (prev: typeof search) => ({ ...prev, q: val }) });
   const setGender = (val: Gender | null) => navigate({ search: (prev: typeof search) => ({ ...prev, gender: val }) });
@@ -60,8 +62,9 @@ function YeshivotPage() {
   const setCity = (val: string | null) => navigate({ search: (prev: typeof search) => ({ ...prev, city: val }) });
   const setDorm = (val: boolean | null) => navigate({ search: (prev: typeof search) => ({ ...prev, dorm: val }) });
   const setSecularStudies = (val: boolean | null) => navigate({ search: (prev: typeof search) => ({ ...prev, secularStudies: val }) });
-  const clear = () => navigate({ search: { q: "", gender: null, sector: null, city: null, dorm: null, secularStudies: null } });
-  const activeCount = [gender, sector, city, dorm, secularStudies].filter(v => v !== null && v !== "" && v !== undefined).length;
+  const setSize = (val: Size | null) => navigate({ search: (prev: typeof search) => ({ ...prev, size: val }) });
+  const clear = () => navigate({ search: { q: "", gender: null, sector: null, city: null, dorm: null, secularStudies: null, size: null } });
+  const activeCount = [gender, sector, city, dorm, secularStudies, size].filter(v => v !== null && v !== "" && v !== undefined).length;
 
   // Restore scroll position when returning from a detail page
   useEffect(() => {
