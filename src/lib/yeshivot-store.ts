@@ -83,5 +83,7 @@ export function useYeshiva(id: string) {
   return list.find(y => y.id === id);
 }
 
+export type Size = "גדולה" | "קטנה";
 export const SECTORS: Sector[] = ["חב\"ד", "ליטאי", "ירושלמי", "ספרדי", "חסידי", "דתי לאומי"];
 export const GENDERS: Gender[] = ["בנים", "בנות"];
+export const SIZES: Size[] = ["גדולה", "קטנה"];
