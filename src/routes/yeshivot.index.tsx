@@ -19,6 +19,8 @@ export const Route = createFileRoute("/yeshivot/")({
     gender: (s.gender as Gender) || null,
     sector: (s.sector as Sector) || null,
     city: (s.city as string) || null,
+    dorm: typeof s.dorm === "boolean" ? s.dorm : null,
+    secularStudies: typeof s.secularStudies === "boolean" ? s.secularStudies : null,
   }),
   component: YeshivotPage,
 });
