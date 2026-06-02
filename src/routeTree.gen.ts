@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as YeshivotRouteImport } from './routes/yeshivot'
+import { Route as ReviewsRouteImport } from './routes/reviews'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as YeshivotIndexRouteImport } from './routes/yeshivot.index'
@@ -18,6 +19,11 @@ import { Route as YeshivotIdRouteImport } from './routes/yeshivot.$id'
 const YeshivotRoute = YeshivotRouteImport.update({
   id: '/yeshivot',
   path: '/yeshivot',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReviewsRoute = ReviewsRouteImport.update({
+  id: '/reviews',
+  path: '/reviews',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -44,6 +50,7 @@ const YeshivotIdRoute = YeshivotIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/reviews': typeof ReviewsRoute
   '/yeshivot': typeof YeshivotRouteWithChildren
   '/yeshivot/$id': typeof YeshivotIdRoute
   '/yeshivot/': typeof YeshivotIndexRoute
@@ -51,6 +58,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/reviews': typeof ReviewsRoute
   '/yeshivot/$id': typeof YeshivotIdRoute
   '/yeshivot': typeof YeshivotIndexRoute
 }
@@ -58,21 +66,36 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/reviews': typeof ReviewsRoute
   '/yeshivot': typeof YeshivotRouteWithChildren
   '/yeshivot/$id': typeof YeshivotIdRoute
   '/yeshivot/': typeof YeshivotIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/yeshivot' | '/yeshivot/$id' | '/yeshivot/'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/reviews'
+    | '/yeshivot'
+    | '/yeshivot/$id'
+    | '/yeshivot/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/yeshivot/$id' | '/yeshivot'
-  id: '__root__' | '/' | '/admin' | '/yeshivot' | '/yeshivot/$id' | '/yeshivot/'
+  to: '/' | '/admin' | '/reviews' | '/yeshivot/$id' | '/yeshivot'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/reviews'
+    | '/yeshivot'
+    | '/yeshivot/$id'
+    | '/yeshivot/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
+  ReviewsRoute: typeof ReviewsRoute
   YeshivotRoute: typeof YeshivotRouteWithChildren
 }
 
@@ -83,6 +106,13 @@ declare module '@tanstack/react-router' {
       path: '/yeshivot'
       fullPath: '/yeshivot'
       preLoaderRoute: typeof YeshivotRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reviews': {
+      id: '/reviews'
+      path: '/reviews'
+      fullPath: '/reviews'
+      preLoaderRoute: typeof ReviewsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -133,6 +163,7 @@ const YeshivotRouteWithChildren = YeshivotRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
+  ReviewsRoute: ReviewsRoute,
   YeshivotRoute: YeshivotRouteWithChildren,
 }
 export const routeTree = rootRouteImport

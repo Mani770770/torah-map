@@ -1,12 +1,14 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useRef } from "react";
-import { MapPin, Users, Phone, Globe, ArrowRight, ChevronRight, ChevronLeft, BookOpen, Search } from "lucide-react";
+import { MapPin, Users, Phone, Globe, ArrowRight, ChevronRight, ChevronLeft, BookOpen, Search, Star, MessageSquare } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { PageTransition } from "@/components/page-transition";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { StarRating } from "@/components/star-rating";
 import { YeshivaDetailSkeleton } from "@/components/yeshiva-detail-skeleton";
 import { type Sector, type Gender, type Size, type Yeshiva, type StaffMember } from "@/lib/yeshivot-store";
+import { useReviews, averageRating, formatDate } from "@/lib/reviews-store";
 
 function readYeshivot(): Yeshiva[] {
   if (typeof window === "undefined") return [];
@@ -49,6 +51,7 @@ function YeshivaDetailPage() {
   const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement>(null);
   const search = Route.useSearch();
+  const { list: reviews } = useReviews();
 
   if (!y) {
     return (
@@ -258,6 +261,60 @@ function YeshivaDetailPage() {
             </div>
           )}
         </section>
+
+        {/* Reviews */}
+        <section className="mt-10">
+          <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <h2 className="flex items-center gap-2 text-xl font-bold text-foreground">
+                <MessageSquare className="h-5 w-5 text-primary" /> חוות דעת ודירוגים
+              </h2>
+              {(() => {
+                const { avg, count } = averageRating(reviews, y.id);
+                return (
+                  <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
+                    <span className="inline-flex items-center gap-1 font-bold text-foreground">
+                      <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+                      {count ? avg.toFixed(1) : "—"}
+                    </span>
+                    <span>· {count} חוות דעת</span>
+                  </div>
+                );
+              })()}
+            </div>
+            <Button asChild size="sm" variant="outline">
+              <Link to="/reviews">הוספת חוות דעת</Link>
+            </Button>
+          </div>
+          {(() => {
+            const yReviews = reviews.filter(r => r.yeshivaId === y.id && r.status === "approved");
+            if (!yReviews.length) {
+              return (
+                <div className="rounded-2xl border border-dashed border-border bg-muted/20 p-8 text-center text-sm text-muted-foreground">
+                  עדיין אין חוות דעת מאושרות לישיבה זו.
+                </div>
+              );
+            }
+            return (
+              <div className="space-y-3">
+                {yReviews.map(r => (
+                  <article key={r.id} className="rounded-2xl border border-border bg-card p-5 shadow-sm">
+                    <header className="flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        <div className="font-bold text-foreground">{r.author}</div>
+                        <div className="text-xs text-muted-foreground">{formatDate(r.createdAt)}</div>
+                      </div>
+                      <StarRating value={r.rating} readOnly size={16} />
+                    </header>
+                    <p className="mt-3 leading-relaxed text-foreground whitespace-pre-line">{r.text}</p>
+                  </article>
+                ))}
+              </div>
+            );
+          })()}
+        </section>
+
+
 
         <div className="mt-10 flex justify-center">
           <Button asChild variant="outline" size="lg" className="inline-flex items-center gap-2 rounded-full border-border hover:bg-primary/5 hover:text-primary hover:border-primary/30">
