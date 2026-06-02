@@ -313,9 +313,120 @@ function AdminPage() {
             </tbody>
           </table>
         </div>
+
+        <ReviewsAdmin />
       </div>
     </div>
   );
+}
+
+function ReviewsAdmin() {
+  const { list: yeshivot } = useYeshivot();
+  const { list: reviews, remove, setStatus } = useReviews();
+  const [tab, setTab] = useState<"pending" | "approved" | "hidden" | "all">("pending");
+
+  const filtered = useMemo(
+    () => (tab === "all" ? reviews : reviews.filter(r => r.status === tab)),
+    [reviews, tab],
+  );
+
+  const counts = {
+    pending: reviews.filter(r => r.status === "pending").length,
+    approved: reviews.filter(r => r.status === "approved").length,
+    hidden: reviews.filter(r => r.status === "hidden").length,
+    all: reviews.length,
+  };
+
+  const tabs: { key: typeof tab; label: string }[] = [
+    { key: "pending", label: `ממתינות (${counts.pending})` },
+    { key: "approved", label: `מאושרות (${counts.approved})` },
+    { key: "hidden", label: `מוסתרות (${counts.hidden})` },
+    { key: "all", label: `הכל (${counts.all})` },
+  ];
+
+  return (
+    <div className="mt-10">
+      <div className="mb-4 flex items-center gap-2">
+        <MessageSquare className="h-5 w-5 text-primary" />
+        <h2 className="text-2xl font-bold text-foreground">ניהול חוות דעת ודירוגים</h2>
+      </div>
+
+      <div className="mb-4 flex flex-wrap gap-1.5 border-b border-border">
+        {tabs.map(t => (
+          <button
+            key={t.key}
+            onClick={() => setTab(t.key)}
+            className={`-mb-px rounded-t-md border-b-2 px-3 py-2 text-sm font-medium transition-colors ${
+              tab === t.key ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      {filtered.length === 0 ? (
+        <div className="rounded-xl border border-dashed border-border bg-muted/20 p-8 text-center text-sm text-muted-foreground">
+          אין חוות דעת בקטגוריה זו.
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {filtered.map((r: Review) => {
+            const y = yeshivot.find(x => x.id === r.yeshivaId);
+            return (
+              <div key={r.id} className="rounded-xl border border-border bg-card p-4 shadow-sm">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-bold text-foreground">{r.author}</span>
+                      <span className="text-xs text-muted-foreground">·</span>
+                      <span className="text-xs font-medium text-primary">{y?.name || "ישיבה נמחקה"}</span>
+                      <StatusBadge status={r.status} />
+                    </div>
+                    <div className="mt-1 flex items-center gap-3">
+                      <StarRating value={r.rating} readOnly size={14} />
+                      <span className="text-xs text-muted-foreground">{formatDate(r.createdAt)}</span>
+                    </div>
+                    <p className="mt-2 whitespace-pre-line text-sm text-foreground">{r.text}</p>
+                  </div>
+                  <div className="flex shrink-0 flex-wrap gap-1.5">
+                    {r.status !== "approved" && (
+                      <Button size="sm" variant="outline" onClick={() => setStatus(r.id, "approved")}>
+                        <Check className="ms-1 h-3.5 w-3.5" /> אישור
+                      </Button>
+                    )}
+                    {r.status !== "hidden" && (
+                      <Button size="sm" variant="outline" onClick={() => setStatus(r.id, "hidden")}>
+                        <EyeOff className="ms-1 h-3.5 w-3.5" /> הסתרה
+                      </Button>
+                    )}
+                    {r.status === "hidden" && (
+                      <Button size="sm" variant="outline" onClick={() => setStatus(r.id, "pending")}>
+                        <Eye className="ms-1 h-3.5 w-3.5" /> שחזור
+                      </Button>
+                    )}
+                    <Button size="sm" variant="outline" className="text-destructive hover:bg-destructive/10" onClick={() => confirm("למחוק את חוות הדעת לצמיתות?") && remove(r.id)}>
+                      <Trash2 className="ms-1 h-3.5 w-3.5" /> מחיקה
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function StatusBadge({ status }: { status: Review["status"] }) {
+  const map = {
+    pending: { label: "ממתין", cls: "bg-amber-500/15 text-amber-700 dark:text-amber-400" },
+    approved: { label: "מאושר", cls: "bg-green-500/15 text-green-700 dark:text-green-400" },
+    hidden: { label: "מוסתר", cls: "bg-muted text-muted-foreground" },
+  } as const;
+  const s = map[status];
+  return <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${s.cls}`}>{s.label}</span>;
 }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
