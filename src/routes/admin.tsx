@@ -64,7 +64,7 @@ function AdminPage() {
     setDraft(d => ({ ...d, gallery: (d.gallery ?? []).filter((_, idx) => idx !== i) }));
 
   const addStaff = () =>
-    setDraft(d => ({ ...d, staff: [...(d.staff ?? []), { id: crypto.randomUUID(), name: "", role: "", image: "" }] }));
+    setDraft(d => ({ ...d, staff: [...(d.staff ?? []), { id: crypto.randomUUID(), name: "", role: "", image: "", phone: "" }] }));
   const updateStaff = (id: string, patch: Partial<StaffMember>) =>
     setDraft(d => ({ ...d, staff: (d.staff ?? []).map(s => s.id === id ? { ...s, ...patch } : s) }));
   const removeStaff = (id: string) =>
@@ -240,8 +240,9 @@ function AdminPage() {
                         )}
                       </div>
                       <div className="grid flex-1 gap-2 sm:grid-cols-2">
-                        <Input placeholder="שם" value={s.name} onChange={e => updateStaff(s.id, { name: e.target.value })} />
-                        <Input placeholder="תפקיד (לא חובה)" value={s.role ?? ""} onChange={e => updateStaff(s.id, { role: e.target.value })} />
+                        <Input placeholder="שם מלא" value={s.name} onChange={e => updateStaff(s.id, { name: e.target.value })} />
+                        <Input placeholder="תפקיד (ראש ישיבה, משגיח...)" value={s.role ?? ""} onChange={e => updateStaff(s.id, { role: e.target.value })} />
+                        <Input dir="ltr" placeholder="טלפון" value={s.phone ?? ""} onChange={e => updateStaff(s.id, { phone: e.target.value })} className="sm:col-span-2" />
                         <input
                           type="file"
                           accept="image/*"
