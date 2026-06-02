@@ -215,28 +215,49 @@ function YeshivaDetailPage() {
         )}
 
         {/* Staff */}
-        {y.staff && y.staff.length > 0 && (
-          <section className="mt-10">
-            <h2 className="mb-4 text-xl font-bold text-foreground">צוות הישיבה</h2>
+        <section className="mt-10">
+          <div className="mb-4 flex items-end justify-between">
+            <div>
+              <h2 className="text-xl font-bold text-foreground">צוות הישיבה / רבני הישיבה</h2>
+              <p className="mt-1 text-sm text-muted-foreground">הרבנים ואנשי הצוות הפעילים בישיבה</p>
+            </div>
+          </div>
+          {y.staff && y.staff.length > 0 ? (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {y.staff.map((s: StaffMember) => (
-                <div key={s.id} className="flex items-center gap-4 rounded-xl border border-border bg-card p-4 transition-all hover:-translate-y-0.5 hover:shadow-md">
+                <div key={s.id} className="group flex flex-col items-center rounded-2xl border border-border bg-card p-5 text-center shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md">
                   {s.image ? (
-                    <img src={s.image} alt={s.name} className="h-16 w-16 rounded-full object-cover" />
+                    <img src={s.image} alt={s.name} className="h-24 w-24 rounded-full object-cover ring-4 ring-primary/10 transition-all group-hover:ring-primary/30" />
                   ) : (
-                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-lg font-bold text-primary">
-                      {s.name.charAt(0)}
+                    <div className="flex h-24 w-24 items-center justify-center rounded-full bg-primary/10 text-2xl font-bold text-primary ring-4 ring-primary/10 transition-all group-hover:ring-primary/30">
+                      {s.name.charAt(0) || "?"}
                     </div>
                   )}
-                  <div className="min-w-0">
-                    <div className="font-bold text-foreground">{s.name}</div>
-                    {s.role && <div className="text-sm text-muted-foreground">{s.role}</div>}
-                  </div>
+                  <div className="mt-3 font-bold text-foreground">{s.name}</div>
+                  {s.role && (
+                    <div className="mt-0.5 inline-block rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
+                      {s.role}
+                    </div>
+                  )}
+                  {s.phone && (
+                    <a
+                      href={`tel:${s.phone}`}
+                      className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1 text-xs font-medium text-foreground transition-colors hover:border-primary hover:bg-primary/5 hover:text-primary"
+                      dir="ltr"
+                    >
+                      <Phone className="h-3.5 w-3.5" />
+                      <span>{s.phone}</span>
+                    </a>
+                  )}
                 </div>
               ))}
             </div>
-          </section>
-        )}
+          ) : (
+            <div className="rounded-2xl border border-dashed border-border bg-muted/20 p-8 text-center text-sm text-muted-foreground">
+              עדיין לא נוספו רבנים או אנשי צוות לישיבה זו.
+            </div>
+          )}
+        </section>
 
         <div className="mt-10 flex justify-center">
           <Button asChild variant="outline" size="lg" className="inline-flex items-center gap-2 rounded-full border-border hover:bg-primary/5 hover:text-primary hover:border-primary/30">
