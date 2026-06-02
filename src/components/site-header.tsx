@@ -6,6 +6,7 @@ export function SiteHeader() {
   const links = [
     { to: "/", label: "בית" },
     { to: "/yeshivot", label: "אינדקס ישיבות" },
+    { to: "/reviews", label: "חוות דעת ודירוגים" },
     { to: "/admin", label: "ניהול" },
   ] as const;
 
