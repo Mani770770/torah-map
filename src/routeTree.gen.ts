@@ -73,10 +73,23 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/reviews' | '/yeshivot' | '/yeshivot/$id' | '/yeshivot/'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/reviews'
+    | '/yeshivot'
+    | '/yeshivot/$id'
+    | '/yeshivot/'
   fileRoutesByTo: FileRoutesByTo
   to: '/' | '/admin' | '/reviews' | '/yeshivot/$id' | '/yeshivot'
-  id: '__root__' | '/' | '/admin' | '/reviews' | '/yeshivot' | '/yeshivot/$id' | '/yeshivot/'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/reviews'
+    | '/yeshivot'
+    | '/yeshivot/$id'
+    | '/yeshivot/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {

@@ -1,12 +1,14 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useRef } from "react";
-import { MapPin, Users, Phone, Globe, ArrowRight, ChevronRight, ChevronLeft, BookOpen, Search } from "lucide-react";
+import { MapPin, Users, Phone, Globe, ArrowRight, ChevronRight, ChevronLeft, BookOpen, Search, Star, MessageSquare } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { PageTransition } from "@/components/page-transition";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { StarRating } from "@/components/star-rating";
 import { YeshivaDetailSkeleton } from "@/components/yeshiva-detail-skeleton";
 import { type Sector, type Gender, type Size, type Yeshiva, type StaffMember } from "@/lib/yeshivot-store";
+import { useReviews, averageRating, formatDate } from "@/lib/reviews-store";
 
 function readYeshivot(): Yeshiva[] {
   if (typeof window === "undefined") return [];
@@ -49,6 +51,7 @@ function YeshivaDetailPage() {
   const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement>(null);
   const search = Route.useSearch();
+  const { list: reviews } = useReviews();
 
   if (!y) {
     return (
