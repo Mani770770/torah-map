@@ -97,8 +97,8 @@ function yeshivaToRow(y: Omit<Yeshiva, "id">) {
     secular_studies: !!y.secularStudies,
     size: y.size ?? null,
     type: y.type ?? null,
-    gallery: y.gallery ?? [],
-    staff: y.staff ?? [],
+    gallery: (y.gallery ?? []) as unknown as never,
+    staff: (y.staff ?? []) as unknown as never,
   };
 }
 
