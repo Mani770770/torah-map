@@ -14,6 +14,50 @@ export type Database = {
   }
   public: {
     Tables: {
+      reviews: {
+        Row: {
+          author: string
+          created_at: string
+          id: string
+          owner_token: string
+          rating: number
+          status: string
+          text: string
+          updated_at: string
+          yeshiva_id: string
+        }
+        Insert: {
+          author: string
+          created_at?: string
+          id?: string
+          owner_token?: string
+          rating: number
+          status?: string
+          text?: string
+          updated_at?: string
+          yeshiva_id: string
+        }
+        Update: {
+          author?: string
+          created_at?: string
+          id?: string
+          owner_token?: string
+          rating?: number
+          status?: string
+          text?: string
+          updated_at?: string
+          yeshiva_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_yeshiva_id_fkey"
+            columns: ["yeshiva_id"]
+            isOneToOne: false
+            referencedRelation: "yeshivot"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       yeshivot: {
         Row: {
           ages: string | null
