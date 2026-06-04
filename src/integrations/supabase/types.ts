@@ -14,7 +14,69 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      yeshivot: {
+        Row: {
+          ages: string | null
+          city: string
+          created_at: string
+          description: string
+          dorm: boolean | null
+          gallery: Json
+          gender: string
+          id: string
+          image: string | null
+          name: string
+          phone: string | null
+          sector: string
+          secular_studies: boolean | null
+          size: string | null
+          staff: Json
+          type: string | null
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          ages?: string | null
+          city: string
+          created_at?: string
+          description?: string
+          dorm?: boolean | null
+          gallery?: Json
+          gender: string
+          id?: string
+          image?: string | null
+          name: string
+          phone?: string | null
+          sector: string
+          secular_studies?: boolean | null
+          size?: string | null
+          staff?: Json
+          type?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          ages?: string | null
+          city?: string
+          created_at?: string
+          description?: string
+          dorm?: boolean | null
+          gallery?: Json
+          gender?: string
+          id?: string
+          image?: string | null
+          name?: string
+          phone?: string | null
+          sector?: string
+          secular_studies?: boolean | null
+          size?: string | null
+          staff?: Json
+          type?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
