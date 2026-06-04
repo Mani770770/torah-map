@@ -277,8 +277,8 @@ function AdminPage() {
           </form>
         )}
 
-        <div className="overflow-hidden rounded-xl border border-border bg-card">
-          <table className="w-full text-right text-sm">
+        <div className="overflow-x-auto rounded-xl border border-border bg-card">
+          <table className="w-full min-w-[640px] text-right text-sm">
             <thead className="border-b border-border bg-muted/40 text-foreground">
               <tr>
                 <Th>שם</Th>
