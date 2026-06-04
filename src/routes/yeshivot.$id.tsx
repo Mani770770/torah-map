@@ -30,11 +30,18 @@ export const Route = createFileRoute("/yeshivot/$id")({
 });
 
 function YeshivaDetailPage() {
-  const { yeshiva: y } = Route.useLoaderData();
+  const { id } = Route.useParams();
+  const { list: allYeshivot } = useYeshivot();
+  const y = useYeshiva(id);
   const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement>(null);
   const search = Route.useSearch();
   const { list: reviews } = useReviews();
+
+  // Still loading from database
+  if (allYeshivot.length === 0) {
+    return <YeshivaDetailSkeleton />;
+  }
 
   if (!y) {
     return (
@@ -47,6 +54,7 @@ function YeshivaDetailPage() {
       </div>
     );
   }
+
 
   const scrollBy = (dir: 1 | -1) => {
     scrollRef.current?.scrollBy({ left: dir * 320, behavior: "smooth" });
