@@ -7,18 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { StarRating } from "@/components/star-rating";
 import { YeshivaDetailSkeleton } from "@/components/yeshiva-detail-skeleton";
-import { type Sector, type Gender, type Size, type Yeshiva, type StaffMember } from "@/lib/yeshivot-store";
+import { type Sector, type Gender, type Size, type Yeshiva, type StaffMember, useYeshiva, useYeshivot } from "@/lib/yeshivot-store";
 import { useReviews, averageRating, formatDate } from "@/lib/reviews-store";
-
-function readYeshivot(): Yeshiva[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = localStorage.getItem("yeshivot.v1");
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
-}
 
 export const Route = createFileRoute("/yeshivot/$id")({
   head: ({ params }) => ({
@@ -36,22 +26,22 @@ export const Route = createFileRoute("/yeshivot/$id")({
     secularStudies: typeof s.secularStudies === "boolean" ? s.secularStudies : null,
     size: (s.size as Size) || null,
   }),
-  loader: async ({ params }) => {
-    // Small delay so skeleton is visible and transition feels smooth
-    await new Promise(r => setTimeout(r, 250));
-    const list = readYeshivot();
-    return { yeshiva: list.find(y => y.id === params.id) || null };
-  },
-  pendingComponent: YeshivaDetailSkeleton,
   component: YeshivaDetailPage,
 });
 
 function YeshivaDetailPage() {
-  const { yeshiva: y } = Route.useLoaderData();
+  const { id } = Route.useParams();
+  const { list: allYeshivot } = useYeshivot();
+  const y = useYeshiva(id);
   const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement>(null);
   const search = Route.useSearch();
   const { list: reviews } = useReviews();
+
+  // Still loading from database
+  if (allYeshivot.length === 0) {
+    return <YeshivaDetailSkeleton />;
+  }
 
   if (!y) {
     return (
@@ -64,6 +54,7 @@ function YeshivaDetailPage() {
       </div>
     );
   }
+
 
   const scrollBy = (dir: 1 | -1) => {
     scrollRef.current?.scrollBy({ left: dir * 320, behavior: "smooth" });
