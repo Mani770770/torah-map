@@ -22,7 +22,7 @@ export const Route = createFileRoute("/admin")({
 type Draft = Omit<Yeshiva, "id">;
 const empty: Draft = {
   name: "", sector: "ליטאי", gender: "בנים", city: "", description: "",
-  image: "", phone: "", website: "", ages: "", dorm: false, type: "",
+  image: "", phone: "", website: "", address: "", mapsUrl: "", ages: "", dorm: false, type: "",
   gallery: [], staff: [],
 };
 
@@ -132,6 +132,12 @@ function AdminPage() {
                 </Field>
                 <Field label="אתר רשמי">
                   <Input dir="ltr" type="url" value={draft.website ?? ""} onChange={e => setDraft({ ...draft, website: e.target.value })} placeholder="https://..." />
+                </Field>
+                <Field label="כתובת מלאה">
+                  <Input value={draft.address ?? ""} onChange={e => setDraft({ ...draft, address: e.target.value })} placeholder="רחוב, מספר, שכונה" />
+                </Field>
+                <Field label="קישור Google Maps">
+                  <Input dir="ltr" type="url" value={draft.mapsUrl ?? ""} onChange={e => setDraft({ ...draft, mapsUrl: e.target.value })} placeholder="https://maps.google.com/..." />
                 </Field>
                 <Field label="גילאים">
                   <Input value={draft.ages ?? ""} onChange={e => setDraft({ ...draft, ages: e.target.value })} placeholder="לדוגמה: 14-18" />
