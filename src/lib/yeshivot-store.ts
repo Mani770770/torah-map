@@ -22,6 +22,8 @@ export interface Yeshiva {
   image?: string;
   phone?: string;
   website?: string;
+  address?: string;
+  mapsUrl?: string;
   ages?: string;
   dorm?: boolean;
   secularStudies?: boolean;
@@ -52,6 +54,8 @@ type Row = {
   image: string | null;
   phone: string | null;
   website: string | null;
+  address: string | null;
+  maps_url: string | null;
   ages: string | null;
   dorm: boolean | null;
   secular_studies: boolean | null;
@@ -72,6 +76,8 @@ function rowToYeshiva(r: Row): Yeshiva {
     image: r.image ?? undefined,
     phone: r.phone ?? undefined,
     website: r.website ?? undefined,
+    address: r.address ?? undefined,
+    mapsUrl: r.maps_url ?? undefined,
     ages: r.ages ?? undefined,
     dorm: r.dorm ?? false,
     secularStudies: r.secular_studies ?? false,
@@ -92,6 +98,8 @@ function yeshivaToRow(y: Omit<Yeshiva, "id">) {
     image: y.image ?? null,
     phone: y.phone ?? null,
     website: y.website ?? null,
+    address: y.address ?? null,
+    maps_url: y.mapsUrl ?? null,
     ages: y.ages ?? null,
     dorm: !!y.dorm,
     secular_studies: !!y.secularStudies,
