@@ -106,7 +106,6 @@ function YeshivaDetailPage() {
     scrollRef.current?.scrollBy({ left: dir * 320, behavior: "smooth" });
   };
 
-  const backSearch = { q: search.q || "", gender: search.gender, sector: search.sector, city: search.city, dorm: search.dorm, secularStudies: search.secularStudies, size: search.size };
   const activeFilters = [
     search.gender ? { label: search.gender, key: "gender" } : null,
     search.sector ? { label: search.sector, key: "sector" } : null,
