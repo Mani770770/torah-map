@@ -299,6 +299,9 @@ function YeshivaDetailPage() {
           )}
         </section>
 
+        {/* Contact & Location */}
+        <ContactLocation y={y} />
+
         {/* Reviews */}
         <section className="mt-10">
           <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
