@@ -105,16 +105,21 @@ function yeshivaToRow(y: Omit<Yeshiva, "id">) {
 // Module-level cache shared across hook instances
 let cache: Yeshiva[] = [];
 let loaded = false;
-const listeners = new Set<(list: Yeshiva[]) => void>();
-const notify = () => listeners.forEach(l => l(cache));
+let lastError: string | null = null;
+type State = { list: Yeshiva[]; loaded: boolean; error: string | null };
+const listeners = new Set<(s: State) => void>();
+const snapshot = (): State => ({ list: cache, loaded, error: lastError });
+const notify = () => { const s = snapshot(); listeners.forEach(l => l(s)); };
 
 let seedingPromise: Promise<void> | null = null;
 async function ensureSeeded() {
   if (seedingPromise) return seedingPromise;
   seedingPromise = (async () => {
-    const { count } = await supabase.from("yeshivot").select("id", { count: "exact", head: true });
+    const { count, error } = await supabase.from("yeshivot").select("id", { count: "exact", head: true });
+    if (error) throw error;
     if ((count ?? 0) === 0) {
-      await supabase.from("yeshivot").insert(seed.map(yeshivaToRow));
+      const { error: insertErr } = await supabase.from("yeshivot").insert(seed.map(yeshivaToRow));
+      if (insertErr) throw insertErr;
     }
   })();
   return seedingPromise;
@@ -127,15 +132,23 @@ async function refresh() {
     .order("created_at", { ascending: true });
   if (error) {
     console.error("Failed to load yeshivot:", error);
+    lastError = error.message || "שגיאה בטעינת הנתונים מהמסד";
+    loaded = true;
+    notify();
     return;
   }
   cache = (data as Row[]).map(rowToYeshiva);
   loaded = true;
+  lastError = null;
   notify();
 }
 
 async function init() {
-  await ensureSeeded();
+  try {
+    await ensureSeeded();
+  } catch (e) {
+    console.error("Seeding failed:", e);
+  }
   await refresh();
 }
 
@@ -145,14 +158,22 @@ function ensureInit() {
   return initPromise;
 }
 
+export function reloadYeshivot() {
+  initPromise = null;
+  loaded = false;
+  lastError = null;
+  notify();
+  return ensureInit();
+}
+
 export function useYeshivot() {
-  const [list, setList] = useState<Yeshiva[]>(cache);
+  const [state, setState] = useState<State>(snapshot);
 
   useEffect(() => {
-    listeners.add(setList);
-    if (loaded) setList(cache);
+    listeners.add(setState);
+    setState(snapshot());
     ensureInit();
-    return () => { listeners.delete(setList); };
+    return () => { listeners.delete(setState); };
   }, []);
 
   const add = useCallback(async (y: Omit<Yeshiva, "id">) => {
@@ -173,7 +194,7 @@ export function useYeshivot() {
     await refresh();
   }, []);
 
-  return { list, add, update, remove };
+  return { list: state.list, loaded: state.loaded, error: state.error, add, update, remove, reload: reloadYeshivot };
 }
 
 export function useYeshiva(id: string) {
