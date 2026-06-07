@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { StarRating } from "@/components/star-rating";
 import { YeshivaDetailSkeleton } from "@/components/yeshiva-detail-skeleton";
+import { ContactLocation } from "@/components/contact-location";
 import { type Sector, type Gender, type Size, type Yeshiva, type StaffMember, useYeshiva, useYeshivot } from "@/lib/yeshivot-store";
 import { useReviews, averageRating, formatDate } from "@/lib/reviews-store";
 
@@ -297,6 +298,9 @@ function YeshivaDetailPage() {
             </div>
           )}
         </section>
+
+        {/* Contact & Location */}
+        <ContactLocation y={y} />
 
         {/* Reviews */}
         <section className="mt-10">
