@@ -31,25 +31,71 @@ export const Route = createFileRoute("/yeshivot/$id")({
 
 function YeshivaDetailPage() {
   const { id } = Route.useParams();
-  const { list: allYeshivot } = useYeshivot();
+  const { list: allYeshivot, loaded, error, reload } = useYeshivot();
   const y = useYeshiva(id);
   const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement>(null);
   const search = Route.useSearch();
   const { list: reviews } = useReviews();
 
+  const backSearch = { q: search.q || "", gender: search.gender, sector: search.sector, city: search.city, dorm: search.dorm, secularStudies: search.secularStudies, size: search.size };
+
   // Still loading from database
-  if (allYeshivot.length === 0) {
+  if (!loaded) {
     return <YeshivaDetailSkeleton />;
+  }
+
+  // Database/network error
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background">
+        <SiteHeader />
+        <div className="mx-auto max-w-md px-4 py-20">
+          <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-8 text-center shadow-sm">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-destructive/10 text-destructive">
+              <AlertCircle className="h-7 w-7" />
+            </div>
+            <h1 className="mt-4 text-xl font-bold text-foreground">לא הצלחנו לטעון את הישיבה</h1>
+            <p className="mt-2 text-sm text-muted-foreground">אירעה שגיאה בהתחברות למסד הנתונים. בדקו את חיבור האינטרנט ונסו שוב.</p>
+            <p className="mt-1 text-xs text-muted-foreground/70" dir="ltr">{error}</p>
+            <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-center">
+              <Button onClick={() => reload()} className="inline-flex items-center gap-2">
+                <RefreshCw className="h-4 w-4" /> נסה שוב
+              </Button>
+              <Button asChild variant="outline">
+                <Link to="/yeshivot/" search={backSearch}>חזרה לאינדקס</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (!y) {
     return (
       <div className="min-h-screen bg-background">
         <SiteHeader />
-        <div className="mx-auto max-w-3xl px-4 py-20 text-center">
-          <h1 className="text-2xl font-bold text-foreground">הישיבה לא נמצאה</h1>
-          <Button className="mt-6" onClick={() => navigate({ to: "/yeshivot", search: { q: search.q || "", gender: search.gender, sector: search.sector, city: search.city } })}>חזרה לאינדקס</Button>
+        <div className="mx-auto max-w-md px-4 py-20">
+          <div className="rounded-2xl border border-border bg-card p-8 text-center shadow-sm">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-muted text-muted-foreground">
+              <Search className="h-7 w-7" />
+            </div>
+            <h1 className="mt-4 text-xl font-bold text-foreground">הישיבה לא נמצאה</h1>
+            <p className="mt-2 text-sm text-muted-foreground">
+              {allYeshivot.length === 0
+                ? "אין כרגע ישיבות במסד הנתונים."
+                : "ייתכן שהישיבה נמחקה או שהקישור שגוי."}
+            </p>
+            <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-center">
+              <Button onClick={() => reload()} variant="outline" className="inline-flex items-center gap-2">
+                <RefreshCw className="h-4 w-4" /> רענון
+              </Button>
+              <Button asChild>
+                <Link to="/yeshivot/" search={backSearch}>חזרה לאינדקס</Link>
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     );
