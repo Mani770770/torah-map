@@ -60,6 +60,7 @@ export type Database = {
       }
       yeshivot: {
         Row: {
+          address: string | null
           ages: string | null
           city: string
           created_at: string
@@ -69,6 +70,7 @@ export type Database = {
           gender: string
           id: string
           image: string | null
+          maps_url: string | null
           name: string
           phone: string | null
           sector: string
@@ -80,6 +82,7 @@ export type Database = {
           website: string | null
         }
         Insert: {
+          address?: string | null
           ages?: string | null
           city: string
           created_at?: string
@@ -89,6 +92,7 @@ export type Database = {
           gender: string
           id?: string
           image?: string | null
+          maps_url?: string | null
           name: string
           phone?: string | null
           sector: string
@@ -100,6 +104,7 @@ export type Database = {
           website?: string | null
         }
         Update: {
+          address?: string | null
           ages?: string | null
           city?: string
           created_at?: string
@@ -109,6 +114,7 @@ export type Database = {
           gender?: string
           id?: string
           image?: string | null
+          maps_url?: string | null
           name?: string
           phone?: string | null
           sector?: string
