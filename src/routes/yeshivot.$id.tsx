@@ -182,49 +182,20 @@ function YeshivaDetailPage() {
           </div>
         </div>
 
-        <div className="mt-8 grid gap-6 lg:grid-cols-3">
-          <div className="lg:col-span-2">
-            <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
-              <h2 className="text-xl font-bold text-foreground">אודות הישיבה</h2>
-              <p className="mt-3 leading-relaxed text-muted-foreground whitespace-pre-line">{y.description}</p>
+        <div className="mt-8">
+          <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+            <h2 className="text-xl font-bold text-foreground">אודות הישיבה</h2>
+            <p className="mt-3 leading-relaxed text-muted-foreground whitespace-pre-line">{y.description}</p>
 
-              <dl className="mt-6 grid gap-4 sm:grid-cols-2">
-                <Info label="מגזר / זרם" value={y.sector} />
-                <Info label="מגדר" value={y.gender} />
-                <Info label="עיר" value={y.city} />
-                <Info label="סוג מוסד" value={y.type || "ישיבה"} />
-                {y.ages && <Info label="גילאים" value={y.ages} />}
-                <Info label="פנימייה" value={y.dorm ? "כן" : "לא"} />
-              </dl>
-            </div>
+            <dl className="mt-6 grid gap-4 sm:grid-cols-2">
+              <Info label="מגזר / זרם" value={y.sector} />
+              <Info label="מגדר" value={y.gender} />
+              <Info label="עיר" value={y.city} />
+              <Info label="סוג מוסד" value={y.type || "ישיבה"} />
+              {y.ages && <Info label="גילאים" value={y.ages} />}
+              <Info label="פנימייה" value={y.dorm ? "כן" : "לא"} />
+            </dl>
           </div>
-
-          <aside className="rounded-2xl border border-border bg-card p-6 shadow-sm">
-            <h3 className="text-lg font-bold text-foreground">יצירת קשר</h3>
-            <div className="mt-4 space-y-3">
-              {y.phone && (
-                <a href={`tel:${y.phone}`} className="flex items-center gap-3 rounded-lg border border-border p-3 transition-colors hover:border-primary hover:bg-primary/5">
-                  <div className="rounded-md bg-primary/10 p-2 text-primary"><Phone className="h-4 w-4" /></div>
-                  <div>
-                    <div className="text-xs text-muted-foreground">טלפון</div>
-                    <div className="font-medium text-foreground" dir="ltr">{y.phone}</div>
-                  </div>
-                </a>
-              )}
-              {y.website && (
-                <a href={y.website} target="_blank" rel="noreferrer" className="flex items-center gap-3 rounded-lg border border-border p-3 transition-colors hover:border-primary hover:bg-primary/5">
-                  <div className="rounded-md bg-primary/10 p-2 text-primary"><Globe className="h-4 w-4" /></div>
-                  <div className="min-w-0">
-                    <div className="text-xs text-muted-foreground">אתר רשמי</div>
-                    <div className="truncate font-medium text-foreground">{y.website.replace(/^https?:\/\//, "")}</div>
-                  </div>
-                </a>
-              )}
-              {!y.phone && !y.website && (
-                <p className="text-sm text-muted-foreground">לא הוזנו פרטי יצירת קשר.</p>
-              )}
-            </div>
-          </aside>
         </div>
 
         {/* Gallery */}
