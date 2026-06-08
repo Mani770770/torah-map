@@ -1,11 +1,14 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { BookOpen } from "lucide-react";
+import { BookOpen, Heart } from "lucide-react";
+import { useFavorites } from "@/lib/favorites-store";
 
 export function SiteHeader() {
   const path = useRouterState({ select: s => s.location.pathname });
+  const { favorites } = useFavorites();
   const links = [
     { to: "/", label: "בית" },
     { to: "/yeshivot", label: "אינדקס ישיבות" },
+    { to: "/favorites", label: "המועדפים שלי", icon: Heart, badge: favorites.length },
     { to: "/reviews", label: "חוות דעת ודירוגים" },
     { to: "/admin", label: "ניהול" },
   ] as const;
