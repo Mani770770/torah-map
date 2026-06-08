@@ -171,6 +171,7 @@ function YeshivaDetailPage() {
             </div>
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+          <FavoriteButton id={y.id} size="lg" className="absolute top-4 end-4 z-10" />
           <div className="absolute bottom-0 right-0 left-0 p-6 text-white sm:p-8">
             <span className="inline-block rounded-full bg-white/20 px-3 py-1 text-xs font-medium backdrop-blur-sm">
               {y.sector}
