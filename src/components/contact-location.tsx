@@ -21,16 +21,16 @@ function buildEmbedUrl(y: Yeshiva): string | null {
 
 function QrCard({ label, data }: { label: string; data: string }) {
   return (
-    <div className="flex flex-col items-center gap-2 rounded-xl border border-border bg-background p-3 shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md">
-      <div className="rounded-lg bg-white p-2 ring-1 ring-border">
+    <div className="flex flex-col items-center gap-1.5 rounded-xl border border-border bg-background p-2 shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md sm:gap-2 sm:p-3">
+      <div className="rounded-lg bg-white p-1.5 ring-1 ring-border sm:p-2">
         <img
-          src={qr(data, 160)}
+          src={qr(data, 200)}
           alt={`QR ${label}`}
           loading="lazy"
-          className="h-28 w-28"
+          className="aspect-square w-full max-w-[120px]"
         />
       </div>
-      <div className="flex items-center gap-1 text-xs font-medium text-muted-foreground">
+      <div className="flex items-center gap-1 text-[11px] font-medium text-muted-foreground sm:text-xs">
         <QrCode className="h-3 w-3" />
         <span>{label}</span>
       </div>
