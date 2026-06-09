@@ -74,18 +74,78 @@ function ReviewsPage() {
           </h2>
 
           <div className="grid gap-4 sm:grid-cols-2">
-            <label className="block">
+            <div className="block">
               <span className="mb-1 block text-sm font-medium text-foreground">בחירת ישיבה</span>
-              <select
-                value={yeshivaId}
-                onChange={e => setYeshivaId(e.target.value)}
-                required
-                className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
-              >
-                <option value="">— בחרו ישיבה —</option>
-                {yeshivot.map(y => <option key={y.id} value={y.id}>{y.name} — {y.city}</option>)}
-              </select>
-            </label>
+              <div className="relative">
+                <div className="relative">
+                  <Input
+                    value={selectedYeshiva && !showSuggestions ? `${selectedYeshiva.name} — ${selectedYeshiva.city}` : yeshivaQuery}
+                    onChange={e => {
+                      setYeshivaQuery(e.target.value);
+                      setYeshivaId("");
+                      setShowSuggestions(true);
+                      setHighlightIdx(0);
+                    }}
+                    onFocus={() => { setShowSuggestions(true); if (selectedYeshiva) setYeshivaQuery(""); }}
+                    onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
+                    onKeyDown={e => {
+                      if (!showSuggestions) return;
+                      if (e.key === "ArrowDown") { e.preventDefault(); setHighlightIdx(i => Math.min(i + 1, suggestions.length - 1)); }
+                      else if (e.key === "ArrowUp") { e.preventDefault(); setHighlightIdx(i => Math.max(i - 1, 0)); }
+                      else if (e.key === "Enter" && suggestions[highlightIdx]) {
+                        e.preventDefault();
+                        const y = suggestions[highlightIdx];
+                        setYeshivaId(y.id); setYeshivaQuery(""); setShowSuggestions(false);
+                      } else if (e.key === "Escape") { setShowSuggestions(false); }
+                    }}
+                    placeholder="התחילו להקליד שם ישיבה או עיר..."
+                    autoComplete="off"
+                    className="pe-9"
+                  />
+                  {selectedYeshiva ? (
+                    <button
+                      type="button"
+                      onClick={() => { setYeshivaId(""); setYeshivaQuery(""); setShowSuggestions(true); }}
+                      className="absolute inset-y-0 left-2 my-auto flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:bg-muted hover:text-foreground"
+                      aria-label="נקה"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  ) : (
+                    <ChevronDown className="pointer-events-none absolute inset-y-0 left-3 my-auto h-4 w-4 text-muted-foreground" />
+                  )}
+                </div>
+                {showSuggestions && suggestions.length > 0 && (
+                  <ul className="absolute z-20 mt-1 max-h-64 w-full overflow-auto rounded-md border border-border bg-popover p-1 shadow-lg animate-fade-in">
+                    {suggestions.map((y, i) => (
+                      <li key={y.id}>
+                        <button
+                          type="button"
+                          onMouseDown={e => e.preventDefault()}
+                          onClick={() => { setYeshivaId(y.id); setYeshivaQuery(""); setShowSuggestions(false); }}
+                          onMouseEnter={() => setHighlightIdx(i)}
+                          className={`flex w-full items-center justify-between gap-2 rounded px-3 py-2 text-right text-sm transition-colors ${
+                            i === highlightIdx ? "bg-accent text-accent-foreground" : "text-foreground hover:bg-accent/50"
+                          }`}
+                        >
+                          <span>
+                            <span className="font-medium">{y.name}</span>
+                            <span className="ms-2 text-xs text-muted-foreground">{y.city}</span>
+                          </span>
+                          {yeshivaId === y.id && <Check className="h-4 w-4 text-primary" />}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {showSuggestions && suggestions.length === 0 && (
+                  <div className="absolute z-20 mt-1 w-full rounded-md border border-border bg-popover p-3 text-center text-sm text-muted-foreground shadow-lg">
+                    לא נמצאו ישיבות תואמות
+                  </div>
+                )}
+              </div>
+              <input type="hidden" required value={yeshivaId} onChange={() => {}} />
+            </div>
             <label className="block">
               <span className="mb-1 block text-sm font-medium text-foreground">השם שלכם</span>
               <Input value={author} onChange={e => setAuthor(e.target.value)} maxLength={60} required placeholder="לדוגמה: יוסי כהן" />
