@@ -11,7 +11,7 @@ export function SiteHeader() {
   const links = [
     { to: "/", label: "בית" },
     { to: "/yeshivot", label: "אינדקס ישיבות" },
-    { to: "/favorites", label: "המועדפים שלי", icon: Heart, badge: favorites.length },
+    { to: "/favorites", label: "המועדפים שלי", badge: favorites.length },
     { to: "/reviews", label: "חוות דעת ודירוגים" },
     { to: "/admin", label: "ניהול" },
   ] as const;
