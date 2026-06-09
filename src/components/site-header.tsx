@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { BookOpen, Heart, Menu, X } from "lucide-react";
+import { BookOpen, Menu, X } from "lucide-react";
 import { useFavorites } from "@/lib/favorites-store";
 
 export function SiteHeader() {
@@ -11,13 +11,12 @@ export function SiteHeader() {
   const links = [
     { to: "/", label: "בית" },
     { to: "/yeshivot", label: "אינדקס ישיבות" },
-    { to: "/favorites", label: "המועדפים שלי", icon: Heart, badge: favorites.length },
+    { to: "/favorites", label: "המועדפים שלי", badge: favorites.length },
     { to: "/reviews", label: "חוות דעת ודירוגים" },
     { to: "/admin", label: "ניהול" },
   ] as const;
 
   const renderLink = (l: typeof links[number], onClick?: () => void) => {
-    const Icon = "icon" in l ? l.icon : null;
     const badge = "badge" in l ? l.badge : 0;
     const active = path === l.to;
     return (
@@ -29,7 +28,6 @@ export function SiteHeader() {
           active ? "bg-primary text-primary-foreground" : "text-foreground hover:bg-muted"
         }`}
       >
-        {Icon && <Icon className={`h-4 w-4 ${badge > 0 ? "fill-rose-500 text-rose-500" : ""}`} />}
         <span>{l.label}</span>
         {badge > 0 && (
           <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-500 px-1.5 text-[10px] font-bold text-white">
