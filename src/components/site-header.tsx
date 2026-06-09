@@ -61,13 +61,23 @@ export function SiteHeader() {
         </button>
       </div>
 
-      {open && (
-        <div className="border-t border-border bg-background lg:hidden">
-          <nav className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-3">
-            {links.map(l => renderLink(l, () => setOpen(false)))}
-          </nav>
-        </div>
-      )}
+      <div
+        className={`overflow-hidden border-border bg-background transition-all duration-300 ease-out lg:hidden ${
+          open ? "max-h-96 border-t opacity-100" : "max-h-0 border-t-0 opacity-0"
+        }`}
+      >
+        <nav className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-3">
+          {links.map((l, i) => (
+            <div
+              key={l.to}
+              className={open ? "animate-fade-in" : ""}
+              style={{ animationDelay: open ? `${i * 40}ms` : "0ms", animationFillMode: "both" }}
+            >
+              {renderLink(l, () => setOpen(false))}
+            </div>
+          ))}
+        </nav>
+      </div>
     </header>
   );
 }

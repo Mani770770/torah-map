@@ -148,7 +148,7 @@ function YeshivotPage() {
               <Chip active={secularStudies === false} onClick={() => setSecularStudies(secularStudies === false ? null : false)}>לא</Chip>
             </FilterGroup>
 
-            <FilterGroup label="גודל הישיבה">
+            <FilterGroup label="סוג ישיבה">
               {SIZES.map(sz => (
                 <Chip key={sz} active={size === sz} onClick={() => setSize(size === sz ? null : sz)}>{sz}</Chip>
               ))}
