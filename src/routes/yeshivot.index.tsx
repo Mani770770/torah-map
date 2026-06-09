@@ -1,12 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { MapPin, Users, Search, Filter, X, BookOpen } from "lucide-react";
+import { MapPin, Users, Search, Filter, X, BookOpen, ChevronDown } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { PageTransition } from "@/components/page-transition";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useYeshivot, SECTORS, GENDERS, SIZES, type Sector, type Gender, type Size } from "@/lib/yeshivot-store";
 import { FavoriteButton } from "@/components/favorite-button";
+import { REGIONS, getRegion, type Region } from "@/lib/regions";
 
 export const Route = createFileRoute("/yeshivot/")({
   head: () => ({
@@ -19,6 +20,7 @@ export const Route = createFileRoute("/yeshivot/")({
     q: (s.q as string) || "",
     gender: (s.gender as Gender) || null,
     sector: (s.sector as Sector) || null,
+    region: (s.region as Region) || null,
     city: (s.city as string) || null,
     dorm: typeof s.dorm === "boolean" ? s.dorm : null,
     secularStudies: typeof s.secularStudies === "boolean" ? s.secularStudies : null,
