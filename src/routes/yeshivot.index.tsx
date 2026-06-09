@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useYeshivot, SECTORS, GENDERS, SIZES, type Sector, type Gender, type Size } from "@/lib/yeshivot-store";
 import { FavoriteButton } from "@/components/favorite-button";
+import { REGIONS, getRegion, type Region } from "@/lib/regions";
 
 export const Route = createFileRoute("/yeshivot/")({
   head: () => ({
@@ -19,6 +20,7 @@ export const Route = createFileRoute("/yeshivot/")({
     q: (s.q as string) || "",
     gender: (s.gender as Gender) || null,
     sector: (s.sector as Sector) || null,
+    region: (s.region as Region) || null,
     city: (s.city as string) || null,
     dorm: typeof s.dorm === "boolean" ? s.dorm : null,
     secularStudies: typeof s.secularStudies === "boolean" ? s.secularStudies : null,
@@ -36,18 +38,42 @@ function YeshivotPage() {
   const q = search.q || "";
   const gender = search.gender;
   const sector = search.sector;
+  const region = search.region;
   const city = search.city;
   const dorm = search.dorm;
   const secularStudies = search.secularStudies;
   const size = search.size;
 
-  const cities = useMemo(() => Array.from(new Set(list.map(y => y.city))).sort(), [list]);
+  const [citySearch, setCitySearch] = useState("");
+
+  const citiesByRegion = useMemo(() => {
+    const map = new Map<Region, string[]>();
+    REGIONS.forEach((r) => map.set(r, []));
+    const seen = new Set<string>();
+    list.forEach((y) => {
+      const key = `${getRegion(y.city)}::${y.city}`;
+      if (seen.has(key)) return;
+      seen.add(key);
+      map.get(getRegion(y.city))!.push(y.city);
+    });
+    map.forEach((arr) => arr.sort((a, b) => a.localeCompare(b, "he")));
+    return map;
+  }, [list]);
+
+  const visibleCities = useMemo<string[]>(() => {
+    if (!region) return [];
+    const term = citySearch.trim();
+    const arr = citiesByRegion.get(region) ?? [];
+    if (!term) return arr;
+    return arr.filter((c: string) => c.includes(term));
+  }, [region, citySearch, citiesByRegion]);
 
   const filtered = useMemo(() => {
     const term = q.trim();
     return list.filter(y => {
       if (gender && y.gender !== gender) return false;
       if (sector && y.sector !== sector) return false;
+      if (region && getRegion(y.city) !== region) return false;
       if (city && y.city !== city) return false;
       if (dorm !== null && y.dorm !== dorm) return false;
       if (secularStudies !== null && y.secularStudies !== secularStudies) return false;
@@ -55,17 +81,24 @@ function YeshivotPage() {
       if (term && ![y.name, y.city, y.sector, y.description].some(v => v.includes(term))) return false;
       return true;
     });
-  }, [list, q, gender, sector, city, dorm, secularStudies, size]);
+  }, [list, q, gender, sector, region, city, dorm, secularStudies, size]);
 
   const setQ = (val: string) => navigate({ search: (prev: typeof search) => ({ ...prev, q: val }) });
   const setGender = (val: Gender | null) => navigate({ search: (prev: typeof search) => ({ ...prev, gender: val }) });
   const setSector = (val: Sector | null) => navigate({ search: (prev: typeof search) => ({ ...prev, sector: val }) });
+  const setRegion = (val: Region | null) => {
+    setCitySearch("");
+    navigate({ search: (prev: typeof search) => ({ ...prev, region: val, city: null }) });
+  };
   const setCity = (val: string | null) => navigate({ search: (prev: typeof search) => ({ ...prev, city: val }) });
   const setDorm = (val: boolean | null) => navigate({ search: (prev: typeof search) => ({ ...prev, dorm: val }) });
   const setSecularStudies = (val: boolean | null) => navigate({ search: (prev: typeof search) => ({ ...prev, secularStudies: val }) });
   const setSize = (val: Size | null) => navigate({ search: (prev: typeof search) => ({ ...prev, size: val }) });
-  const clear = () => navigate({ search: { q: "", gender: null, sector: null, city: null, dorm: null, secularStudies: null, size: null } });
-  const activeCount = [gender, sector, city, dorm, secularStudies, size].filter(v => v !== null && v !== "" && v !== undefined).length;
+  const clear = () => {
+    setCitySearch("");
+    navigate({ search: { q: "", gender: null, sector: null, region: null, city: null, dorm: null, secularStudies: null, size: null } });
+  };
+  const activeCount = [gender, sector, region, city, dorm, secularStudies, size].filter(v => v !== null && v !== "" && v !== undefined).length;
 
   // Restore scroll position when returning from a detail page
   useEffect(() => {
@@ -132,11 +165,52 @@ function YeshivotPage() {
               ))}
             </FilterGroup>
 
-            <FilterGroup label="עיר">
-              {cities.map(c => (
-                <Chip key={c} active={city === c} onClick={() => setCity(city === c ? null : c)}>{c}</Chip>
-              ))}
+            <FilterGroup label="איזור בארץ">
+              {REGIONS.map((r) => {
+                const count = (citiesByRegion.get(r) ?? []).length;
+                if (count === 0) return null;
+                return (
+                  <Chip key={r} active={region === r} onClick={() => setRegion(region === r ? null : r)}>
+                    {r} <span className="opacity-60">({count})</span>
+                  </Chip>
+                );
+              })}
             </FilterGroup>
+
+            {region && (
+              <div className="mb-5 rounded-lg border border-border bg-background/50 p-3 animate-in fade-in slide-in-from-top-1 duration-200">
+                <div className="mb-2 flex items-center justify-between">
+                  <h3 className="text-sm font-semibold text-foreground">עיר / יישוב</h3>
+                  {city && (
+                    <button onClick={() => setCity(null)} className="text-xs text-muted-foreground hover:text-foreground">
+                      נקה
+                    </button>
+                  )}
+                </div>
+                <div className="relative mb-2">
+                  <Search className="pointer-events-none absolute end-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    value={citySearch}
+                    onChange={(e) => setCitySearch(e.target.value)}
+                    placeholder="חיפוש עיר..."
+                    className="h-8 pe-7 text-sm"
+                  />
+                </div>
+                <div className="max-h-48 overflow-y-auto pr-1">
+                  {visibleCities.length === 0 ? (
+                    <p className="text-xs text-muted-foreground">לא נמצאו ערים</p>
+                  ) : (
+                    <div className="flex flex-wrap gap-2">
+                      {visibleCities.map((c) => (
+                        <Chip key={c} active={city === c} onClick={() => setCity(city === c ? null : c)}>
+                          {c}
+                        </Chip>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             <FilterGroup label="פנימייה">
               <Chip active={dorm === true} onClick={() => setDorm(dorm === true ? null : true)}>כן</Chip>
