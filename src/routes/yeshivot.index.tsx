@@ -47,25 +47,25 @@ function YeshivotPage() {
   const [citySearch, setCitySearch] = useState("");
 
   const citiesByRegion = useMemo(() => {
-    const map = new Map<Region, Set<string>>();
-    REGIONS.forEach(r => map.set(r, new Set()));
-    list.forEach(y => {
-      const r = getRegion(y.city);
-      map.get(r)!.add(y.city);
+    const map = new Map<Region, string[]>();
+    REGIONS.forEach((r) => map.set(r, []));
+    const seen = new Set<string>();
+    list.forEach((y) => {
+      const key = `${getRegion(y.city)}::${y.city}`;
+      if (seen.has(key)) return;
+      seen.add(key);
+      map.get(getRegion(y.city))!.push(y.city);
     });
-    const out: Record<Region, string[]> = {} as Record<Region, string[]>;
-    REGIONS.forEach(r => {
-      out[r] = Array.from(map.get(r)!).sort((a, b) => a.localeCompare(b, "he"));
-    });
-    return out;
+    map.forEach((arr) => arr.sort((a, b) => a.localeCompare(b, "he")));
+    return map;
   }, [list]);
 
-  const visibleCities = useMemo(() => {
+  const visibleCities = useMemo<string[]>(() => {
     if (!region) return [];
     const term = citySearch.trim();
-    const arr = citiesByRegion[region] ?? [];
+    const arr = citiesByRegion.get(region) ?? [];
     if (!term) return arr;
-    return arr.filter(c => c.includes(term));
+    return arr.filter((c: string) => c.includes(term));
   }, [region, citySearch, citiesByRegion]);
 
   const filtered = useMemo(() => {
