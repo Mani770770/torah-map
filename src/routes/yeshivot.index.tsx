@@ -165,11 +165,52 @@ function YeshivotPage() {
               ))}
             </FilterGroup>
 
-            <FilterGroup label="עיר">
-              {cities.map(c => (
-                <Chip key={c} active={city === c} onClick={() => setCity(city === c ? null : c)}>{c}</Chip>
-              ))}
+            <FilterGroup label="איזור בארץ">
+              {REGIONS.map((r) => {
+                const count = (citiesByRegion.get(r) ?? []).length;
+                if (count === 0) return null;
+                return (
+                  <Chip key={r} active={region === r} onClick={() => setRegion(region === r ? null : r)}>
+                    {r} <span className="opacity-60">({count})</span>
+                  </Chip>
+                );
+              })}
             </FilterGroup>
+
+            {region && (
+              <div className="mb-5 rounded-lg border border-border bg-background/50 p-3 animate-in fade-in slide-in-from-top-1 duration-200">
+                <div className="mb-2 flex items-center justify-between">
+                  <h3 className="text-sm font-semibold text-foreground">עיר / יישוב</h3>
+                  {city && (
+                    <button onClick={() => setCity(null)} className="text-xs text-muted-foreground hover:text-foreground">
+                      נקה
+                    </button>
+                  )}
+                </div>
+                <div className="relative mb-2">
+                  <Search className="pointer-events-none absolute end-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    value={citySearch}
+                    onChange={(e) => setCitySearch(e.target.value)}
+                    placeholder="חיפוש עיר..."
+                    className="h-8 pe-7 text-sm"
+                  />
+                </div>
+                <div className="max-h-48 overflow-y-auto pr-1">
+                  {visibleCities.length === 0 ? (
+                    <p className="text-xs text-muted-foreground">לא נמצאו ערים</p>
+                  ) : (
+                    <div className="flex flex-wrap gap-2">
+                      {visibleCities.map((c) => (
+                        <Chip key={c} active={city === c} onClick={() => setCity(city === c ? null : c)}>
+                          {c}
+                        </Chip>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             <FilterGroup label="פנימייה">
               <Chip active={dorm === true} onClick={() => setDorm(dorm === true ? null : true)}>כן</Chip>
