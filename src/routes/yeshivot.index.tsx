@@ -38,18 +38,42 @@ function YeshivotPage() {
   const q = search.q || "";
   const gender = search.gender;
   const sector = search.sector;
+  const region = search.region;
   const city = search.city;
   const dorm = search.dorm;
   const secularStudies = search.secularStudies;
   const size = search.size;
 
-  const cities = useMemo(() => Array.from(new Set(list.map(y => y.city))).sort(), [list]);
+  const [citySearch, setCitySearch] = useState("");
+
+  const citiesByRegion = useMemo(() => {
+    const map = new Map<Region, Set<string>>();
+    REGIONS.forEach(r => map.set(r, new Set()));
+    list.forEach(y => {
+      const r = getRegion(y.city);
+      map.get(r)!.add(y.city);
+    });
+    const out: Record<Region, string[]> = {} as Record<Region, string[]>;
+    REGIONS.forEach(r => {
+      out[r] = Array.from(map.get(r)!).sort((a, b) => a.localeCompare(b, "he"));
+    });
+    return out;
+  }, [list]);
+
+  const visibleCities = useMemo(() => {
+    if (!region) return [];
+    const term = citySearch.trim();
+    const arr = citiesByRegion[region] ?? [];
+    if (!term) return arr;
+    return arr.filter(c => c.includes(term));
+  }, [region, citySearch, citiesByRegion]);
 
   const filtered = useMemo(() => {
     const term = q.trim();
     return list.filter(y => {
       if (gender && y.gender !== gender) return false;
       if (sector && y.sector !== sector) return false;
+      if (region && getRegion(y.city) !== region) return false;
       if (city && y.city !== city) return false;
       if (dorm !== null && y.dorm !== dorm) return false;
       if (secularStudies !== null && y.secularStudies !== secularStudies) return false;
@@ -57,17 +81,24 @@ function YeshivotPage() {
       if (term && ![y.name, y.city, y.sector, y.description].some(v => v.includes(term))) return false;
       return true;
     });
-  }, [list, q, gender, sector, city, dorm, secularStudies, size]);
+  }, [list, q, gender, sector, region, city, dorm, secularStudies, size]);
 
   const setQ = (val: string) => navigate({ search: (prev: typeof search) => ({ ...prev, q: val }) });
   const setGender = (val: Gender | null) => navigate({ search: (prev: typeof search) => ({ ...prev, gender: val }) });
   const setSector = (val: Sector | null) => navigate({ search: (prev: typeof search) => ({ ...prev, sector: val }) });
+  const setRegion = (val: Region | null) => {
+    setCitySearch("");
+    navigate({ search: (prev: typeof search) => ({ ...prev, region: val, city: null }) });
+  };
   const setCity = (val: string | null) => navigate({ search: (prev: typeof search) => ({ ...prev, city: val }) });
   const setDorm = (val: boolean | null) => navigate({ search: (prev: typeof search) => ({ ...prev, dorm: val }) });
   const setSecularStudies = (val: boolean | null) => navigate({ search: (prev: typeof search) => ({ ...prev, secularStudies: val }) });
   const setSize = (val: Size | null) => navigate({ search: (prev: typeof search) => ({ ...prev, size: val }) });
-  const clear = () => navigate({ search: { q: "", gender: null, sector: null, city: null, dorm: null, secularStudies: null, size: null } });
-  const activeCount = [gender, sector, city, dorm, secularStudies, size].filter(v => v !== null && v !== "" && v !== undefined).length;
+  const clear = () => {
+    setCitySearch("");
+    navigate({ search: { q: "", gender: null, sector: null, region: null, city: null, dorm: null, secularStudies: null, size: null } });
+  };
+  const activeCount = [gender, sector, region, city, dorm, secularStudies, size].filter(v => v !== null && v !== "" && v !== undefined).length;
 
   // Restore scroll position when returning from a detail page
   useEffect(() => {
