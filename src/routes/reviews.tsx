@@ -26,11 +26,23 @@ function ReviewsPage() {
   const owner = typeof window !== "undefined" ? getOwnerToken() : "";
 
   const [yeshivaId, setYeshivaId] = useState("");
+  const [yeshivaQuery, setYeshivaQuery] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [highlightIdx, setHighlightIdx] = useState(0);
   const [author, setAuthor] = useState("");
   const [rating, setRating] = useState(0);
   const [text, setText] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [filter, setFilter] = useState("");
+
+  const selectedYeshiva = yeshivot.find(y => y.id === yeshivaId);
+  const suggestions = useMemo(() => {
+    const q = yeshivaQuery.trim().toLowerCase();
+    const base = q
+      ? yeshivot.filter(y => y.name.toLowerCase().includes(q) || y.city.toLowerCase().includes(q))
+      : yeshivot;
+    return base.slice(0, 8);
+  }, [yeshivot, yeshivaQuery]);
 
   const visible = useMemo(
     () => reviews.filter(r => r.status === "approved" && (!filter || r.yeshivaId === filter)),
