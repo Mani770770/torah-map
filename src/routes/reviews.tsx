@@ -53,7 +53,7 @@ function ReviewsPage() {
     e.preventDefault();
     if (!yeshivaId || !author.trim() || !rating || !text.trim()) return;
     add({ yeshivaId, author: author.trim().slice(0, 60), rating, text: text.trim().slice(0, 1000) });
-    setAuthor(""); setRating(0); setText(""); setYeshivaId("");
+    setAuthor(""); setRating(0); setText(""); setYeshivaId(""); setYeshivaQuery("");
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 4000);
   };
