@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { BookOpen, Menu, X } from "lucide-react";
 import { useFavorites } from "@/lib/favorites-store";
@@ -7,6 +7,15 @@ export function SiteHeader() {
   const path = useRouterState({ select: s => s.location.pathname });
   const { favorites } = useFavorites();
   const [open, setOpen] = useState(false);
+  const [pulse, setPulse] = useState(0);
+  const prev = useRef(favorites.length);
+
+  useEffect(() => {
+    if (favorites.length !== prev.current) {
+      prev.current = favorites.length;
+      setPulse((n) => n + 1);
+    }
+  }, [favorites.length]);
 
   const links = [
     { to: "/", label: "בית" },
@@ -30,13 +39,17 @@ export function SiteHeader() {
       >
         <span>{l.label}</span>
         {badge > 0 && (
-          <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-500 px-1.5 text-[10px] font-bold text-white">
+          <span
+            key={`${l.to}-${pulse}`}
+            className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-500 px-1.5 text-[10px] font-bold text-white animate-badge-pop"
+          >
             {badge}
           </span>
         )}
       </Link>
     );
   };
+
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur">
