@@ -168,7 +168,6 @@ function YeshivotPage() {
             <FilterGroup label="איזור בארץ">
               {REGIONS.map((r) => {
                 const count = (citiesByRegion.get(r) ?? []).length;
-                if (count === 0) return null;
                 return (
                   <Chip key={r} active={region === r} onClick={() => setRegion(region === r ? null : r)}>
                     {r} <span className="opacity-60">({count})</span>
