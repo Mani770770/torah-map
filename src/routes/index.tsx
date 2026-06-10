@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Search, MapPin, Users, Mail, Bug, MessageCircle } from "lucide-react";
+import { Search, MapPin, Users, Mail, Bug, MessageCircle, Compass } from "lucide-react";
+import { REGIONS, getRegion, type Region } from "@/lib/regions";
 import { SiteHeader } from "@/components/site-header";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -101,8 +102,66 @@ function HomePage() {
         </div>
       </section>
 
+      <RegionsSection />
+
       <ContactSection />
     </div>
+  );
+}
+
+const REGION_STYLES: Record<Region, { gradient: string; emoji: string; desc: string }> = {
+  "צפון": { gradient: "from-emerald-500 to-teal-600", emoji: "🌲", desc: "ישיבות בגליל, חיפה והצפון" },
+  "מרכז": { gradient: "from-blue-500 to-indigo-600", emoji: "🏙️", desc: "ירושלים, גוש דן והמרכז" },
+  "דרום": { gradient: "from-amber-500 to-orange-600", emoji: "🏜️", desc: "באר שבע, אשקלון והנגב" },
+};
+
+function RegionsSection() {
+  const { list } = useYeshivot();
+  const counts = REGIONS.reduce<Record<Region, number>>((acc, r) => {
+    acc[r] = list.filter((y) => getRegion(y.city) === r).length;
+    return acc;
+  }, { "צפון": 0, "מרכז": 0, "דרום": 0 });
+
+  return (
+    <section className="mx-auto max-w-7xl px-4 pb-16">
+      <div className="mb-8 flex items-end justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-foreground sm:text-3xl">חיפוש לפי איזור</h2>
+          <p className="mt-1 text-muted-foreground">מצאו ישיבות לפי איזור בארץ</p>
+        </div>
+        <Link to="/yeshivot" className="text-sm font-medium text-primary hover:underline">
+          לכל הישיבות ←
+        </Link>
+      </div>
+
+      <div className="grid gap-6 sm:grid-cols-3">
+        {REGIONS.map((r) => {
+          const style = REGION_STYLES[r];
+          return (
+            <Link
+              key={r}
+              to="/yeshivot"
+              search={{ q: "", gender: null, sector: null, region: r, city: null, dorm: null, secularStudies: null, size: null } as never}
+              className="group relative overflow-hidden rounded-2xl border border-border bg-card transition-all hover:-translate-y-1 hover:shadow-xl"
+            >
+              <div className={`relative flex h-44 items-center justify-center bg-gradient-to-br ${style.gradient} text-white`}>
+                <span className="text-6xl" aria-hidden>{style.emoji}</span>
+                <Compass className="absolute end-4 top-4 h-5 w-5 opacity-70" />
+              </div>
+              <div className="p-5">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-bold text-foreground group-hover:text-primary">{r}</h3>
+                  <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
+                    {counts[r]} ישיבות
+                  </span>
+                </div>
+                <p className="mt-1.5 text-sm text-muted-foreground">{style.desc}</p>
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+    </section>
   );
 }
 
