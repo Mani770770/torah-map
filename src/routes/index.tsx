@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Search, MapPin, Users, Mail, Bug, MessageCircle } from "lucide-react";
+import { Search, MapPin, Users, Mail, Bug, MessageCircle, Compass } from "lucide-react";
+import { REGIONS, getRegion, type Region } from "@/lib/regions";
 import { SiteHeader } from "@/components/site-header";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
