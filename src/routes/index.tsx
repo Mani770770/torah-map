@@ -100,7 +100,110 @@ function HomePage() {
           ))}
         </div>
       </section>
+
+      <ContactSection />
     </div>
+  );
+}
+
+function ContactSection() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [topic, setTopic] = useState<"bug" | "feedback" | "other">("bug");
+  const [message, setMessage] = useState("");
+  const [sending, setSending] = useState(false);
+
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!message.trim()) {
+      toast.error("נא למלא את תוכן ההודעה");
+      return;
+    }
+    setSending(true);
+    const subject = encodeURIComponent(
+      topic === "bug" ? "דיווח על באג באתר" : topic === "feedback" ? "משוב על האתר" : "פנייה כללית"
+    );
+    const body = encodeURIComponent(
+      `שם: ${name}\nאימייל: ${email}\n\n${message}`
+    );
+    window.location.href = `mailto:support@yeshivot.co.il?subject=${subject}&body=${body}`;
+    setTimeout(() => {
+      setSending(false);
+      toast.success("נפתחה תוכנת המייל לשליחה");
+    }, 500);
+  };
+
+  return (
+    <section id="contact" className="border-t border-border bg-muted/30 px-4 py-16">
+      <div className="mx-auto max-w-3xl">
+        <div className="mb-8 text-center">
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <Mail className="h-6 w-6" />
+          </div>
+          <h2 className="text-2xl font-bold text-foreground sm:text-3xl">יצירת קשר</h2>
+          <p className="mt-2 text-muted-foreground">
+            מצאתם באג? יש לכם הצעה לשיפור? נשמח לשמוע מכם
+          </p>
+        </div>
+
+        <form onSubmit={submit} className="rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8">
+          <div className="mb-4 grid gap-4 sm:grid-cols-2">
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-foreground">שם</label>
+              <Input value={name} onChange={e => setName(e.target.value)} placeholder="השם שלכם" />
+            </div>
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-foreground">אימייל</label>
+              <Input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" />
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <label className="mb-1.5 block text-sm font-medium text-foreground">סוג הפנייה</label>
+            <div className="flex flex-wrap gap-2">
+              {[
+                { id: "bug", label: "באג / תקלה", icon: Bug },
+                { id: "feedback", label: "משוב / הצעה", icon: MessageCircle },
+                { id: "other", label: "אחר", icon: Mail },
+              ].map(opt => {
+                const Icon = opt.icon;
+                const active = topic === opt.id;
+                return (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    onClick={() => setTopic(opt.id as typeof topic)}
+                    className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors ${
+                      active
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-border bg-background text-foreground hover:border-primary/50"
+                    }`}
+                  >
+                    <Icon className="h-3.5 w-3.5" />
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <label className="mb-1.5 block text-sm font-medium text-foreground">תוכן ההודעה *</label>
+            <Textarea
+              value={message}
+              onChange={e => setMessage(e.target.value)}
+              placeholder="פרטו כאן את הבעיה / ההצעה / השאלה..."
+              rows={5}
+              required
+            />
+          </div>
+
+          <Button type="submit" disabled={sending} className="w-full sm:w-auto">
+            {sending ? "שולח..." : "שליחה"}
+          </Button>
+        </form>
+      </div>
+    </section>
   );
 }
 
