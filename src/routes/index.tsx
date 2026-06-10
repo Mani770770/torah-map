@@ -1,9 +1,11 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Search, MapPin, Users } from "lucide-react";
+import { Search, MapPin, Users, Mail, Bug, MessageCircle } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 import { useYeshivot } from "@/lib/yeshivot-store";
 
 export const Route = createFileRoute("/")({
