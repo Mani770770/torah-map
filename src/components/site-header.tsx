@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useRouter, useRouterState } from "@tanstack/react-router";
 import { BookOpen, Menu, X, Undo2, RotateCcw } from "lucide-react";
 import { useFavorites } from "@/lib/favorites-store";
+import { RestartLoader } from "@/components/restart-loader";
 
 export function SiteHeader() {
   const path = useRouterState({ select: s => s.location.pathname });
@@ -11,6 +12,7 @@ export function SiteHeader() {
   const [pulse, setPulse] = useState(0);
   const [backClick, setBackClick] = useState(0);
   const [restartClick, setRestartClick] = useState(0);
+  const [showRestartLoader, setShowRestartLoader] = useState(false);
   const prev = useRef(favorites.length);
 
   useEffect(() => {
@@ -27,7 +29,7 @@ export function SiteHeader() {
 
   const restart = () => {
     setRestartClick((n) => n + 1);
-    setTimeout(() => window.location.reload(), 280);
+    setTimeout(() => setShowRestartLoader(true), 180);
   };
 
   const links = [
@@ -87,54 +89,57 @@ export function SiteHeader() {
   );
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
-        <Link to="/" className="flex items-center gap-2 text-primary" onClick={() => setOpen(false)}>
-          <BookOpen className="h-6 w-6" />
-          <span className="text-lg font-bold">אינדקס הישיבות</span>
-        </Link>
+    <>
+      <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
+          <Link to="/" className="flex items-center gap-2 text-primary" onClick={() => setOpen(false)}>
+            <BookOpen className="h-6 w-6" />
+            <span className="text-lg font-bold">אינדקס הישיבות</span>
+          </Link>
 
-        <div className="hidden items-center gap-1 lg:flex">
-          <nav className="flex items-center gap-1">
-            {links.map(l => renderLink(l))}
-          </nav>
-          <ActionButtons />
-        </div>
-
-        <div className="flex items-center gap-1 lg:hidden">
-          <ActionButtons />
-          <button
-            type="button"
-            aria-label={open ? "סגור תפריט" : "פתח תפריט"}
-            aria-expanded={open}
-            onClick={() => setOpen(v => !v)}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-md text-foreground transition-all hover:bg-muted hover:scale-105 active:scale-95"
-          >
-            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
-        </div>
-      </div>
-
-      <div
-        className={`overflow-hidden border-border bg-background transition-all duration-300 ease-out lg:hidden ${
-          open ? "max-h-[28rem] border-t opacity-100" : "max-h-0 border-t-0 opacity-0"
-        }`}
-      >
-        <nav className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-3">
-          {links.map((l, i) => (
-            <div
-              key={l.to}
-              className={open ? "animate-fade-in" : ""}
-              style={{ animationDelay: open ? `${i * 40}ms` : "0ms", animationFillMode: "both" }}
-            >
-              {renderLink(l, () => setOpen(false))}
-            </div>
-          ))}
-          <div className={open ? "animate-fade-in" : ""} style={{ animationDelay: open ? "200ms" : "0ms", animationFillMode: "both" }}>
-            <ActionButtons mobile />
+          <div className="hidden items-center gap-1 lg:flex">
+            <nav className="flex items-center gap-1">
+              {links.map(l => renderLink(l))}
+            </nav>
+            <ActionButtons />
           </div>
-        </nav>
-      </div>
-    </header>
+
+          <div className="flex items-center gap-1 lg:hidden">
+            <ActionButtons />
+            <button
+              type="button"
+              aria-label={open ? "סגור תפריט" : "פתח תפריט"}
+              aria-expanded={open}
+              onClick={() => setOpen(v => !v)}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-md text-foreground transition-all hover:bg-muted hover:scale-105 active:scale-95"
+            >
+              {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
+        </div>
+
+        <div
+          className={`overflow-hidden border-border bg-background transition-all duration-300 ease-out lg:hidden ${
+            open ? "max-h-[28rem] border-t opacity-100" : "max-h-0 border-t-0 opacity-0"
+          }`}
+        >
+          <nav className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-3">
+            {links.map((l, i) => (
+              <div
+                key={l.to}
+                className={open ? "animate-fade-in" : ""}
+                style={{ animationDelay: open ? `${i * 40}ms` : "0ms", animationFillMode: "both" }}
+              >
+                {renderLink(l, () => setOpen(false))}
+              </div>
+            ))}
+            <div className={open ? "animate-fade-in" : ""} style={{ animationDelay: open ? "200ms" : "0ms", animationFillMode: "both" }}>
+              <ActionButtons mobile />
+            </div>
+          </nav>
+        </div>
+      </header>
+      {showRestartLoader && <RestartLoader onComplete={() => window.location.reload()} />}
+    </>
   );
 }
