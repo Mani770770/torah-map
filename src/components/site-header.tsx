@@ -1,13 +1,16 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useRouterState } from "@tanstack/react-router";
-import { BookOpen, Menu, X } from "lucide-react";
+import { Link, useRouter, useRouterState } from "@tanstack/react-router";
+import { BookOpen, Menu, X, Undo2, RotateCcw } from "lucide-react";
 import { useFavorites } from "@/lib/favorites-store";
 
 export function SiteHeader() {
   const path = useRouterState({ select: s => s.location.pathname });
+  const router = useRouter();
   const { favorites } = useFavorites();
   const [open, setOpen] = useState(false);
   const [pulse, setPulse] = useState(0);
+  const [backClick, setBackClick] = useState(0);
+  const [restartClick, setRestartClick] = useState(0);
   const prev = useRef(favorites.length);
 
   useEffect(() => {
@@ -16,6 +19,16 @@ export function SiteHeader() {
       setPulse((n) => n + 1);
     }
   }, [favorites.length]);
+
+  const goBack = () => {
+    setBackClick((n) => n + 1);
+    setTimeout(() => router.history.back(), 180);
+  };
+
+  const restart = () => {
+    setRestartClick((n) => n + 1);
+    setTimeout(() => window.location.reload(), 280);
+  };
 
   const links = [
     { to: "/", label: "בית" },
