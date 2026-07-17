@@ -63,6 +63,28 @@ export function SiteHeader() {
     );
   };
 
+  const ActionButtons = ({ mobile = false }: { mobile?: boolean }) => (
+    <div className={`inline-flex items-center gap-1 ${mobile ? "justify-center border-t border-border pt-2" : "me-2"}`}>
+      <button
+        type="button"
+        onClick={goBack}
+        aria-label="חזור לדף הקודם"
+        title="חזור לדף הקודם"
+        className={`inline-flex h-10 w-10 items-center justify-center rounded-md text-foreground transition-all hover:bg-muted hover:scale-105 active:scale-95 ${backClick > 0 ? "animate-btn-spin" : ""}`}
+      >
+        <Undo2 key={`back-${backClick}`} className="h-5 w-5" />
+      </button>
+      <button
+        type="button"
+        onClick={restart}
+        aria-label="ריסטארט לאתר"
+        title="ריסטארט לאתר"
+        className={`inline-flex h-10 w-10 items-center justify-center rounded-md text-foreground transition-all hover:bg-muted hover:scale-105 active:scale-95 ${restartClick > 0 ? "animate-btn-spin" : ""}`}
+      >
+        <RotateCcw key={`restart-${restartClick}`} className="h-5 w-5" />
+      </button>
+    </div>
+  );
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur">
@@ -72,19 +94,25 @@ export function SiteHeader() {
           <span className="text-lg font-bold">אינדקס הישיבות</span>
         </Link>
 
-        <nav className="hidden items-center gap-1 lg:flex">
-          {links.map(l => renderLink(l))}
-        </nav>
+        <div className="hidden items-center gap-1 lg:flex">
+          <nav className="flex items-center gap-1">
+            {links.map(l => renderLink(l))}
+          </nav>
+          <ActionButtons />
+        </div>
 
-        <button
-          type="button"
-          aria-label={open ? "סגור תפריט" : "פתח תפריט"}
-          aria-expanded={open}
-          onClick={() => setOpen(v => !v)}
-          className="inline-flex h-10 w-10 items-center justify-center rounded-md text-foreground hover:bg-muted lg:hidden"
-        >
-          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
+        <div className="flex items-center gap-1 lg:hidden">
+          <ActionButtons />
+          <button
+            type="button"
+            aria-label={open ? "סגור תפריט" : "פתח תפריט"}
+            aria-expanded={open}
+            onClick={() => setOpen(v => !v)}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-md text-foreground transition-all hover:bg-muted hover:scale-105 active:scale-95"
+          >
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
       </div>
 
       <div
