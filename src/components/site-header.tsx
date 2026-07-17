@@ -117,7 +117,7 @@ export function SiteHeader() {
 
       <div
         className={`overflow-hidden border-border bg-background transition-all duration-300 ease-out lg:hidden ${
-          open ? "max-h-96 border-t opacity-100" : "max-h-0 border-t-0 opacity-0"
+          open ? "max-h-[28rem] border-t opacity-100" : "max-h-0 border-t-0 opacity-0"
         }`}
       >
         <nav className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-3">
@@ -130,6 +130,9 @@ export function SiteHeader() {
               {renderLink(l, () => setOpen(false))}
             </div>
           ))}
+          <div className={open ? "animate-fade-in" : ""} style={{ animationDelay: open ? "200ms" : "0ms", animationFillMode: "both" }}>
+            <ActionButtons mobile />
+          </div>
         </nav>
       </div>
     </header>
