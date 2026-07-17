@@ -29,7 +29,7 @@ export function RestartLoader({ onComplete }: { onComplete?: () => void }) {
 
   return (
     <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-background/95 backdrop-blur-md">
-      <div className="relative h-40 w-56" style={{ perspective: "800px" }} aria-hidden>
+      <div className="relative h-40 w-56" aria-hidden>
         {/* Book cover */}
         <div className="absolute inset-0 rounded-r-lg bg-primary shadow-2xl" />
         <div className="absolute left-0 top-0 h-full w-2 bg-primary/40" />
@@ -43,19 +43,15 @@ export function RestartLoader({ onComplete }: { onComplete?: () => void }) {
           const isActive = i < filledPages;
           const delay = i * 70;
           const stackOffset = i * -3;
+          const transform = isActive ? `translateY(${stackOffset}px)` : "translateX(2rem) translateY(1rem) rotate(12deg)";
           return (
             <div
               key={i}
               className={cn(
                 "absolute right-1 top-1 h-[calc(100%-8px)] w-[calc(100%-12px)] origin-right rounded-r border border-border/40 bg-card shadow-md transition-all duration-500 ease-out",
-                isActive
-                  ? "opacity-100 translate-x-0 translate-y-0 rotate-0"
-                  : "opacity-0 translate-x-8 translate-y-4 rotate-12"
+                isActive ? "opacity-100" : "opacity-0"
               )}
-              style={{
-                transitionDelay: `${delay}ms`,
-                transform: isActive ? `translateY(${stackOffset}px)` : undefined,
-              }}
+              style={{ transitionDelay: `${delay}ms`, transform }}
             >
               <div className="absolute inset-0 flex flex-col gap-1.5 p-3">
                 <div className="h-2 w-3/4 rounded bg-muted" />
