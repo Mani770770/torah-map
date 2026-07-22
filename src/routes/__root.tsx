@@ -72,14 +72,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "אינדקס הישיבות בישראל — חיפוש ישיבות לבנים ובנות" },
+      { name: "description", content: "אינדקס מקיף לכל הישיבות בישראל - חב\"ד, ליטאי, ירושלמי, ספרדי ועוד. חיפוש לפי מגדר, מגזר ועיר." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "אינדקס הישיבות בישראל — חיפוש ישיבות לבנים ובנות" },
+      { property: "og:description", content: "אינדקס מקיף לכל הישיבות בישראל - חב\"ד, ליטאי, ירושלמי, ספרדי ועוד. חיפוש לפי מגדר, מגזר ועיר." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "אינדקס הישיבות בישראל — חיפוש ישיבות לבנים ובנות" },
+      { name: "twitter:description", content: "אינדקס מקיף לכל הישיבות בישראל - חב\"ד, ליטאי, ירושלמי, ספרדי ועוד. חיפוש לפי מגדר, מגזר ועיר." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/7b164a53-9fba-4fd3-90da-c070e9345461/id-preview-8a6f1855--0a897e80-8c45-4655-8e7c-4f8a1527296c.lovable.app-1784288736797.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/7b164a53-9fba-4fd3-90da-c070e9345461/id-preview-8a6f1855--0a897e80-8c45-4655-8e7c-4f8a1527296c.lovable.app-1784288736797.png" },
     ],
     links: [
       {
