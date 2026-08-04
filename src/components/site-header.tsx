@@ -1,13 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useRouter, useRouterState } from "@tanstack/react-router";
-import { BookOpen, Menu, X, Undo2, RotateCcw } from "lucide-react";
+import { BookOpen, Menu, X, Undo2, RotateCcw, LogIn, User } from "lucide-react";
 import { useFavorites } from "@/lib/favorites-store";
+import { useAuth } from "@/lib/auth-store";
 import { RestartLoader } from "@/components/restart-loader";
+
 
 export function SiteHeader() {
   const path = useRouterState({ select: s => s.location.pathname });
   const router = useRouter();
   const { favorites } = useFavorites();
+  const { user, ready } = useAuth();
   const [open, setOpen] = useState(false);
   const [pulse, setPulse] = useState(0);
   const [backClick, setBackClick] = useState(0);
@@ -65,6 +68,24 @@ export function SiteHeader() {
     );
   };
 
+
+  const AuthButton = ({ onClick, full = false }: { onClick?: () => void; full?: boolean }) => {
+    if (!ready) return null;
+    const signedIn = !!user;
+    return (
+      <Link
+        to={signedIn ? "/profile" : "/auth"}
+        onClick={onClick}
+        className={`inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold transition-all hover:scale-105 active:scale-95 ${
+          full ? "justify-center" : ""
+        } ${signedIn ? "border border-border text-foreground hover:bg-muted" : "bg-primary text-primary-foreground hover:bg-primary/90"}`}
+      >
+        {signedIn ? <User className="h-4 w-4" /> : <LogIn className="h-4 w-4" />}
+        <span>{signedIn ? "הפרופיל שלי" : "התחברות"}</span>
+      </Link>
+    );
+  };
+
   const ActionButtons = ({ mobile = false }: { mobile?: boolean }) => (
     <div className={`inline-flex items-center gap-1 ${mobile ? "justify-center border-t border-border pt-2" : "me-2"}`}>
       <button
@@ -102,6 +123,7 @@ export function SiteHeader() {
               {links.map(l => renderLink(l))}
             </nav>
             <ActionButtons />
+            <AuthButton />
           </div>
 
           <div className="flex items-center gap-1 lg:hidden">
@@ -134,6 +156,7 @@ export function SiteHeader() {
               </div>
             ))}
             <div className={open ? "animate-fade-in" : ""} style={{ animationDelay: open ? "200ms" : "0ms", animationFillMode: "both" }}>
+              <div className="mb-2 px-1"><AuthButton onClick={() => setOpen(false)} full /></div>
               <ActionButtons mobile />
             </div>
           </nav>
