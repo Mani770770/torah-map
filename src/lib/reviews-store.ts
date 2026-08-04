@@ -10,6 +10,7 @@ export interface Review {
   createdAt: number;
   status: "pending" | "approved" | "hidden";
   ownerToken: string;
+  userId: string | null;
 }
 
 const OWNER_KEY = "reviews.owner";
@@ -32,6 +33,7 @@ type Row = {
   text: string;
   status: string;
   owner_token: string;
+  user_id: string | null;
   created_at: string;
 };
 
@@ -45,6 +47,7 @@ function rowToReview(r: Row): Review {
     createdAt: new Date(r.created_at).getTime(),
     status: (r.status as Review["status"]) ?? "pending",
     ownerToken: r.owner_token ?? "",
+    userId: r.user_id ?? null,
   };
 }
 
@@ -80,8 +83,10 @@ export function useReviews() {
     return () => { listeners.delete(setList); };
   }, []);
 
-  const add = useCallback(async (r: Omit<Review, "id" | "createdAt" | "status" | "ownerToken">) => {
+  const add = useCallback(async (r: Omit<Review, "id" | "createdAt" | "status" | "ownerToken" | "userId">) => {
+    const { data: auth } = await supabase.auth.getUser();
     const { error } = await supabase.from("reviews").insert({
+      user_id: auth.user?.id ?? null,
       yeshiva_id: r.yeshivaId,
       author: r.author,
       rating: r.rating,

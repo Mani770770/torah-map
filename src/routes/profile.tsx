@@ -159,7 +159,7 @@ function ProfilePage() {
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <p className="font-bold text-foreground">{y?.name ?? "ישיבה"}</p>
                         <div className="flex items-center gap-2">
-                          <StarRating value={r.rating} readOnly size="sm" />
+                          <StarRating value={r.rating} readOnly size={16} />
                           <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${
                             r.status === "approved" ? "bg-emerald-500/10 text-emerald-600"
                             : r.status === "hidden" ? "bg-muted text-muted-foreground"
