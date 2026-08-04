@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useRouter, useRouterState } from "@tanstack/react-router";
-import { BookOpen, Menu, X, Undo2, RotateCcw } from "lucide-react";
+import { BookOpen, Menu, X, Undo2, RotateCcw, LogIn, User } from "lucide-react";
 import { useFavorites } from "@/lib/favorites-store";
+import { useAuth } from "@/lib/auth-store";
 import { RestartLoader } from "@/components/restart-loader";
+
 
 export function SiteHeader() {
   const path = useRouterState({ select: s => s.location.pathname });
