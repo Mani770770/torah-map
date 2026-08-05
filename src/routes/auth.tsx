@@ -1,14 +1,18 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { BookOpen, Loader2 } from "lucide-react";
+import { BookOpen, Loader2, UserRound, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-store";
+import { getAccounts, forgetAccount, type KnownAccount } from "@/lib/accounts";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PageTransition } from "@/components/page-transition";
 
 export const Route = createFileRoute("/auth")({
+  validateSearch: (s: Record<string, unknown>): { switch?: boolean } => ({
+    switch: s.switch === true || s.switch === "true" ? true : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "התחברות והרשמה — אינדקס הישיבות" },
@@ -25,6 +29,7 @@ export const Route = createFileRoute("/auth")({
 function AuthPage() {
   const navigate = useNavigate();
   const { user, ready } = useAuth();
+  const isSwitching = Route.useSearch().switch === true;
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,10 +37,14 @@ function AuthPage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [info, setInfo] = useState("");
+  const [accounts, setAccounts] = useState<KnownAccount[]>([]);
+
+  useEffect(() => { setAccounts(getAccounts()); }, []);
 
   useEffect(() => {
     if (ready && user) void navigate({ to: "/profile", replace: true });
   }, [ready, user, navigate]);
+
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,11 +90,53 @@ function AuthPage() {
 
           <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
             <h1 className="text-2xl font-bold text-foreground">
-              {mode === "login" ? "התחברות" : "הרשמה"}
+              {isSwitching ? "החלפת חשבון" : mode === "login" ? "התחברות" : "הרשמה"}
             </h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              {mode === "login" ? "התחבר כדי לגשת למועדפים ולחוות הדעת שלך." : "צור חשבון ושמור את הישיבות שאהבת."}
+              {isSwitching
+                ? "בחר חשבון מהרשימה או התחבר עם חשבון אחר."
+                : mode === "login" ? "התחבר כדי לגשת למועדפים ולחוות הדעת שלך." : "צור חשבון ושמור את הישיבות שאהבת."}
             </p>
+
+            {mode === "login" && accounts.length > 0 && (
+              <div className="mt-5 space-y-2">
+                <p className="text-xs font-semibold text-muted-foreground">חשבונות אחרונים במכשיר זה</p>
+                {accounts.map(a => (
+                  <div
+                    key={a.email}
+                    className={`flex items-center gap-2 rounded-xl border p-2 transition-colors ${
+                      email.toLowerCase() === a.email.toLowerCase() ? "border-primary bg-primary/5" : "border-border hover:bg-muted"
+                    }`}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => { setEmail(a.email); setPassword(""); setError(""); }}
+                      className="flex flex-1 items-center gap-3 text-start"
+                    >
+                      <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-brand text-sm font-bold text-primary-foreground">
+                        {(a.name || a.email).trim().charAt(0).toUpperCase()}
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block truncate text-sm font-semibold text-foreground">{a.name || a.email.split("@")[0]}</span>
+                        <span dir="ltr" className="block truncate text-xs text-muted-foreground">{a.email}</span>
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      aria-label={`הסר את ${a.email} מהרשימה`}
+                      onClick={() => { forgetAccount(a.email); setAccounts(getAccounts()); }}
+                      className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                ))}
+                <p className="flex items-center gap-1.5 pt-1 text-xs text-muted-foreground">
+                  <UserRound className="h-3.5 w-3.5" /> יש להזין סיסמה כדי להתחבר לחשבון שנבחר
+                </p>
+              </div>
+            )}
+
 
             <form onSubmit={submit} className="mt-6 space-y-4">
               {mode === "signup" && (
