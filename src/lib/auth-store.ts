@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { rememberAccount } from "@/lib/accounts";
 
 export interface Profile {
   id: string;
@@ -14,6 +15,14 @@ let ready = false;
 const listeners = new Set<() => void>();
 const notify = () => listeners.forEach(l => l());
 
+function remember(s: Session | null) {
+  const email = s?.user?.email;
+  if (email) {
+    const meta = s?.user?.user_metadata as { display_name?: string; full_name?: string } | undefined;
+    rememberAccount(email, meta?.display_name ?? meta?.full_name);
+  }
+}
+
 let initialized = false;
 function init() {
   if (initialized || typeof window === "undefined") return;
@@ -21,14 +30,17 @@ function init() {
   supabase.auth.getSession().then(({ data }) => {
     session = data.session;
     ready = true;
+    remember(session);
     notify();
   });
   supabase.auth.onAuthStateChange((_e, s) => {
     session = s;
     ready = true;
+    remember(s);
     notify();
   });
 }
+
 
 export function useAuth() {
   const [, force] = useState(0);
