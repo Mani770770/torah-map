@@ -86,13 +86,23 @@ function ProfilePage() {
                 <p dir="ltr" className="text-sm text-muted-foreground">{user.email}</p>
               </div>
             </div>
-            <Button
-              variant="outline"
-              onClick={async () => { await signOut(); void navigate({ to: "/", replace: true }); }}
-            >
-              <LogOut className="h-4 w-4" />
-              התנתקות
-            </Button>
+            <div className="flex flex-wrap items-center gap-2">
+              <Button
+                variant="secondary"
+                onClick={async () => { await signOut(); void navigate({ to: "/auth", search: { switch: true }, replace: true }); }}
+              >
+                <Users className="h-4 w-4" />
+                החלפת חשבון
+              </Button>
+              <Button
+                variant="outline"
+                onClick={async () => { await signOut(); void navigate({ to: "/", replace: true }); }}
+              >
+                <LogOut className="h-4 w-4" />
+                התנתקות
+              </Button>
+            </div>
+
           </div>
 
           <section className="mt-6 rounded-2xl border border-border bg-card p-6">
