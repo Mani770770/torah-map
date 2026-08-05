@@ -112,11 +112,13 @@ export function SiteHeader() {
   return (
     <>
       <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur">
+        <div className="h-1 w-full bg-gradient-brand" />
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
           <Link to="/" className="flex items-center gap-2 text-primary" onClick={() => setOpen(false)}>
             <BookOpen className="h-6 w-6" />
-            <span className="text-lg font-bold">אינדקס הישיבות</span>
+            <span className="text-lg font-bold text-gradient-brand">אינדקס הישיבות</span>
           </Link>
+
 
           <div className="hidden items-center gap-1 lg:flex">
             <nav className="flex items-center gap-1">
