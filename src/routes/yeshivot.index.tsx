@@ -16,7 +16,16 @@ export const Route = createFileRoute("/yeshivot/")({
       { name: "description", content: "רשימת כל הישיבות בישראל עם סינון לפי מגדר, מגזר ועיר." },
     ],
   }),
-  validateSearch: (s: Record<string, unknown>) => ({
+  validateSearch: (s: Record<string, unknown>): {
+    q?: string;
+    gender?: Gender | null;
+    sector?: Sector | null;
+    region?: Region | null;
+    city?: string | null;
+    dorm?: boolean | null;
+    secularStudies?: boolean | null;
+    size?: Size | null;
+  } => ({
     q: (s.q as string) || "",
     gender: (s.gender as Gender) || null,
     sector: (s.sector as Sector) || null,
@@ -26,6 +35,7 @@ export const Route = createFileRoute("/yeshivot/")({
     secularStudies: typeof s.secularStudies === "boolean" ? s.secularStudies : null,
     size: (s.size as Size) || null,
   }),
+
   component: YeshivotPage,
 });
 
