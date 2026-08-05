@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Heart, LogOut, Loader2, Star, User as UserIcon, Save } from "lucide-react";
+import { Heart, LogOut, Loader2, Star, User as UserIcon, Save, Users } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { PageTransition } from "@/components/page-transition";
 import { Button } from "@/components/ui/button";
