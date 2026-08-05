@@ -19,7 +19,15 @@ export const Route = createFileRoute("/yeshivot/$id")({
       { name: "description", content: "פרטים מלאים על הישיבה: מגזר, מיקום, רבנים, גלריה ופרטי קשר." },
     ],
   }),
-  validateSearch: (s: Record<string, unknown>) => ({
+  validateSearch: (s: Record<string, unknown>): {
+    q?: string;
+    gender?: Gender | null;
+    sector?: Sector | null;
+    city?: string | null;
+    dorm?: boolean | null;
+    secularStudies?: boolean | null;
+    size?: Size | null;
+  } => ({
     q: (s.q as string) || "",
     gender: (s.gender as Gender) || null,
     sector: (s.sector as Sector) || null,
@@ -28,6 +36,7 @@ export const Route = createFileRoute("/yeshivot/$id")({
     secularStudies: typeof s.secularStudies === "boolean" ? s.secularStudies : null,
     size: (s.size as Size) || null,
   }),
+
   component: YeshivaDetailPage,
 });
 
