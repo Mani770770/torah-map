@@ -31,19 +31,24 @@ function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background bg-page-glow">
       <SiteHeader />
 
-      <section className="border-b border-border bg-gradient-to-b from-primary to-primary/90 px-4 py-20 text-primary-foreground">
-        <div className="mx-auto max-w-3xl text-center">
-          <h1 className="text-4xl font-bold leading-tight sm:text-5xl">
+      <section className="relative overflow-hidden border-b border-border bg-gradient-brand px-4 py-20 text-primary-foreground">
+        <div className="pointer-events-none absolute -top-24 -start-24 h-72 w-72 rounded-full bg-gold/20 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-28 -end-20 h-80 w-80 rounded-full bg-teal/20 blur-3xl" />
+        <div className="relative mx-auto max-w-3xl text-center">
+          <span className="inline-flex items-center gap-2 rounded-full border border-gold-accent bg-white/10 px-4 py-1 text-xs font-semibold tracking-wide">
+            אינדקס הישיבות בישראל
+          </span>
+          <h1 className="mt-4 text-4xl font-bold leading-tight sm:text-5xl">
             כל הישיבות בישראל במקום אחד
           </h1>
           <p className="mt-4 text-lg text-primary-foreground/80">
             מצאו את הישיבה המתאימה — לכל המגזרים, הזרמים, לבנים ולבנות
           </p>
 
-          <form onSubmit={submit} className="mx-auto mt-8 flex max-w-xl gap-2 rounded-xl bg-card p-2 shadow-2xl">
+          <form onSubmit={submit} className="mx-auto mt-8 flex max-w-xl gap-2 rounded-xl bg-card p-2 shadow-2xl ring-1 ring-gold/25">
             <Search className="ms-2 h-5 w-5 self-center text-muted-foreground" />
             <Input
               value={q}
@@ -59,9 +64,10 @@ function HomePage() {
       <section className="mx-auto max-w-7xl px-4 py-16">
         <div className="mb-8 flex items-end justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-foreground sm:text-3xl">ישיבות נבחרות</h2>
+            <h2 className="text-2xl font-bold text-gradient-brand sm:text-3xl">ישיבות נבחרות</h2>
             <p className="mt-1 text-muted-foreground">מבחר מהמוסדות המובילים באינדקס</p>
           </div>
+
           <Link to="/yeshivot" className="text-sm font-medium text-primary hover:underline">
             לכל הישיבות ←
           </Link>
