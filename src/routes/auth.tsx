@@ -1,14 +1,18 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { BookOpen, Loader2 } from "lucide-react";
+import { BookOpen, Loader2, UserRound, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-store";
+import { getAccounts, forgetAccount, type KnownAccount } from "@/lib/accounts";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PageTransition } from "@/components/page-transition";
 
 export const Route = createFileRoute("/auth")({
+  validateSearch: (s: Record<string, unknown>): { switch?: boolean } => ({
+    switch: s.switch === true || s.switch === "true" ? true : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "התחברות והרשמה — אינדקס הישיבות" },
@@ -25,6 +29,7 @@ export const Route = createFileRoute("/auth")({
 function AuthPage() {
   const navigate = useNavigate();
   const { user, ready } = useAuth();
+  const isSwitching = Route.useSearch().switch === true;
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,10 +37,14 @@ function AuthPage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [info, setInfo] = useState("");
+  const [accounts, setAccounts] = useState<KnownAccount[]>([]);
+
+  useEffect(() => { setAccounts(getAccounts()); }, []);
 
   useEffect(() => {
     if (ready && user) void navigate({ to: "/profile", replace: true });
   }, [ready, user, navigate]);
+
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
