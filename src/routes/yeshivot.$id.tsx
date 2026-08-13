@@ -9,7 +9,7 @@ import { StarRating } from "@/components/star-rating";
 import { YeshivaDetailSkeleton } from "@/components/yeshiva-detail-skeleton";
 import { ContactLocation } from "@/components/contact-location";
 import { FavoriteButton } from "@/components/favorite-button";
-import { type Sector, type Gender, type Size, type Yeshiva, type StaffMember, useYeshiva, useYeshivot } from "@/lib/yeshivot-store";
+import { formatPrice, type Sector, type Gender, type Size, type Yeshiva, type StaffMember, useYeshiva, useYeshivot } from "@/lib/yeshivot-store";
 import { useReviews, averageRating, formatDate } from "@/lib/reviews-store";
 
 export const Route = createFileRoute("/yeshivot/$id")({
@@ -205,6 +205,8 @@ function YeshivaDetailPage() {
               <Info label="סוג מוסד" value={y.type || "ישיבה"} />
               {y.ages && <Info label="גילאים" value={y.ages} />}
               <Info label="פנימייה" value={y.dorm ? "כן" : "לא"} />
+              <Info label="עלות הישיבה" value={formatPrice(y) ?? "לא צוין"} />
+              {y.priceNote && <Info label="פירוט העלות" value={y.priceNote} />}
             </dl>
           </div>
         </div>
