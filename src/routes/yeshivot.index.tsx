@@ -1,13 +1,24 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { MapPin, Users, Search, Filter, X, BookOpen } from "lucide-react";
+import { MapPin, Users, Search, Filter, X, BookOpen, ArrowDownWideNarrow, Wallet } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { PageTransition } from "@/components/page-transition";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useYeshivot, SECTORS, GENDERS, SIZES, type Sector, type Gender, type Size } from "@/lib/yeshivot-store";
+import { useYeshivot, SECTORS, GENDERS, SIZES, formatPrice, monthlyPrice, type Sector, type Gender, type Size } from "@/lib/yeshivot-store";
+import { useReviews, averageRating } from "@/lib/reviews-store";
+import { StarRating } from "@/components/star-rating";
 import { FavoriteButton } from "@/components/favorite-button";
 import { REGIONS, getRegion, type Region } from "@/lib/regions";
+
+export type SortKey = "default" | "priceDesc" | "priceAsc" | "ratingDesc" | "ratingAsc";
+export const SORTS: { key: SortKey; label: string }[] = [
+  { key: "default", label: "ברירת מחדל" },
+  { key: "priceDesc", label: "מחיר: מהגבוה לנמוך" },
+  { key: "priceAsc", label: "מחיר: מהנמוך לגבוה" },
+  { key: "ratingDesc", label: "דירוג: מהגבוה לנמוך" },
+  { key: "ratingAsc", label: "דירוג: מהנמוך לגבוה" },
+];
 
 export const Route = createFileRoute("/yeshivot/")({
   head: () => ({
@@ -25,6 +36,7 @@ export const Route = createFileRoute("/yeshivot/")({
     dorm?: boolean | null;
     secularStudies?: boolean | null;
     size?: Size | null;
+    sort?: SortKey;
   } => ({
     q: (s.q as string) || "",
     gender: (s.gender as Gender) || null,
@@ -34,6 +46,7 @@ export const Route = createFileRoute("/yeshivot/")({
     dorm: typeof s.dorm === "boolean" ? s.dorm : null,
     secularStudies: typeof s.secularStudies === "boolean" ? s.secularStudies : null,
     size: (s.size as Size) || null,
+    sort: (SORTS.some(o => o.key === s.sort) ? (s.sort as SortKey) : "default"),
   }),
 
   component: YeshivotPage,
@@ -43,6 +56,7 @@ function YeshivotPage() {
   const navigate = Route.useNavigate();
   const search = Route.useSearch();
   const { list } = useYeshivot();
+  const { list: reviews } = useReviews();
   const [open, setOpen] = useState(false);
 
   const q = search.q || "";
@@ -53,6 +67,7 @@ function YeshivotPage() {
   const dorm = search.dorm;
   const secularStudies = search.secularStudies;
   const size = search.size;
+  const sort = search.sort ?? "default";
 
   const [citySearch, setCitySearch] = useState("");
 
@@ -93,6 +108,35 @@ function YeshivotPage() {
     });
   }, [list, q, gender, sector, region, city, dorm, secularStudies, size]);
 
+  const ratings = useMemo(() => {
+    const map = new Map<string, { avg: number; count: number }>();
+    list.forEach(y => map.set(y.id, averageRating(reviews, y.id)));
+    return map;
+  }, [list, reviews]);
+
+  const sorted = useMemo(() => {
+    if (sort === "default") return filtered;
+    const arr = [...filtered];
+    if (sort === "priceDesc" || sort === "priceAsc") {
+      arr.sort((a, b) => {
+        const pa = monthlyPrice(a);
+        const pb = monthlyPrice(b);
+        if (pa === null && pb === null) return 0;
+        if (pa === null) return 1;
+        if (pb === null) return -1;
+        return sort === "priceDesc" ? pb - pa : pa - pb;
+      });
+    } else {
+      arr.sort((a, b) => {
+        const ra = ratings.get(a.id)?.avg ?? 0;
+        const rb = ratings.get(b.id)?.avg ?? 0;
+        return sort === "ratingDesc" ? rb - ra : ra - rb;
+      });
+    }
+    return arr;
+  }, [filtered, sort, ratings]);
+
+  const setSort = (val: SortKey) => navigate({ search: (prev: typeof search) => ({ ...prev, sort: val }) });
   const setQ = (val: string) => navigate({ search: (prev: typeof search) => ({ ...prev, q: val }) });
   const setGender = (val: Gender | null) => navigate({ search: (prev: typeof search) => ({ ...prev, gender: val }) });
   const setSector = (val: Sector | null) => navigate({ search: (prev: typeof search) => ({ ...prev, sector: val }) });
@@ -106,7 +150,7 @@ function YeshivotPage() {
   const setSize = (val: Size | null) => navigate({ search: (prev: typeof search) => ({ ...prev, size: val }) });
   const clear = () => {
     setCitySearch("");
-    navigate({ search: { q: "", gender: null, sector: null, region: null, city: null, dorm: null, secularStudies: null, size: null } });
+    navigate({ search: { q: "", gender: null, sector: null, region: null, city: null, dorm: null, secularStudies: null, size: null, sort: "default" } });
   };
   const activeCount = [gender, sector, region, city, dorm, secularStudies, size].filter(v => v !== null && v !== "" && v !== undefined).length;
 
@@ -256,6 +300,17 @@ function YeshivotPage() {
                   className="pe-9"
                 />
               </div>
+              <div className="relative">
+                <ArrowDownWideNarrow className="pointer-events-none absolute end-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <select
+                  value={sort}
+                  onChange={e => setSort(e.target.value as SortKey)}
+                  aria-label="מיון"
+                  className="h-9 rounded-md border border-input bg-background ps-3 pe-8 text-sm text-foreground"
+                >
+                  {SORTS.map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
+                </select>
+              </div>
               <Button variant="outline" className="lg:hidden" onClick={() => setOpen(true)}>
                 <Filter className="h-4 w-4" />
                 {activeCount > 0 && <span className="ms-1 rounded-full bg-primary px-1.5 text-xs text-primary-foreground">{activeCount}</span>}
@@ -268,7 +323,7 @@ function YeshivotPage() {
               </div>
             ) : (
               <div className="grid gap-4 sm:grid-cols-2">
-                {filtered.map(y => (
+                {sorted.map(y => (
                   <div key={y.id} className="group relative overflow-hidden rounded-xl border border-border bg-card transition-all hover:-translate-y-0.5 hover:shadow-lg">
                     <FavoriteButton id={y.id} className="absolute top-3 end-3 z-10" />
                     <Link
@@ -296,7 +351,18 @@ function YeshivotPage() {
                         <div className="mt-2 flex flex-wrap gap-3 text-xs text-muted-foreground">
                           <span className="inline-flex items-center gap-1"><MapPin className="h-3 w-3" />{y.city}</span>
                           <span className="inline-flex items-center gap-1"><Users className="h-3 w-3" />{y.gender}</span>
+                          {formatPrice(y) && (
+                            <span className="inline-flex items-center gap-1 font-semibold text-foreground"><Wallet className="h-3 w-3" />{formatPrice(y)}</span>
+                          )}
                         </div>
+                        {(ratings.get(y.id)?.count ?? 0) > 0 && (
+                          <div className="mt-2 flex items-center gap-1.5">
+                            <StarRating value={ratings.get(y.id)!.avg} readOnly size={14} />
+                            <span className="text-xs text-muted-foreground">
+                              {ratings.get(y.id)!.avg.toFixed(1)} ({ratings.get(y.id)!.count})
+                            </span>
+                          </div>
+                        )}
                         <p className="mt-3 text-sm text-muted-foreground line-clamp-2">{y.description}</p>
                       </div>
                     </Link>

@@ -29,6 +29,9 @@ export interface Yeshiva {
   secularStudies?: boolean;
   size?: "גדולה" | "קטנה";
   type?: string;
+  price?: number | null;
+  pricePeriod?: "חודשי" | "שנתי" | null;
+  priceNote?: string;
   gallery?: string[];
   staff?: StaffMember[];
 }
@@ -61,6 +64,9 @@ type Row = {
   secular_studies: boolean | null;
   size: string | null;
   type: string | null;
+  price: number | null;
+  price_period: string | null;
+  price_note: string | null;
   gallery: unknown;
   staff: unknown;
 };
@@ -83,6 +89,9 @@ function rowToYeshiva(r: Row): Yeshiva {
     secularStudies: r.secular_studies ?? false,
     size: (r.size as "גדולה" | "קטנה" | null) ?? undefined,
     type: r.type ?? undefined,
+    price: r.price ?? null,
+    pricePeriod: (r.price_period as "חודשי" | "שנתי" | null) ?? null,
+    priceNote: r.price_note ?? undefined,
     gallery: Array.isArray(r.gallery) ? (r.gallery as string[]) : [],
     staff: Array.isArray(r.staff) ? (r.staff as StaffMember[]) : [],
   };
@@ -105,6 +114,9 @@ function yeshivaToRow(y: Omit<Yeshiva, "id">) {
     secular_studies: !!y.secularStudies,
     size: y.size ?? null,
     type: y.type ?? null,
+    price: y.price ?? null,
+    price_period: y.pricePeriod ?? null,
+    price_note: y.priceNote ?? null,
     gallery: (y.gallery ?? []) as unknown as never,
     staff: (y.staff ?? []) as unknown as never,
   };
@@ -214,3 +226,16 @@ export type Size = "גדולה" | "קטנה";
 export const SECTORS: Sector[] = ["חב\"ד", "ליטאי", "ירושלמי", "ספרדי", "חסידי", "דתי לאומי"];
 export const GENDERS: Gender[] = ["בנים", "בנות"];
 export const SIZES: Size[] = ["גדולה", "קטנה"];
+export const PRICE_PERIODS = ["חודשי", "שנתי"] as const;
+
+export function formatPrice(y: Pick<Yeshiva, "price" | "pricePeriod">) {
+  if (y.price === null || y.price === undefined) return null;
+  const num = new Intl.NumberFormat("he-IL").format(y.price);
+  return `₪${num} ${y.pricePeriod === "שנתי" ? "לשנה" : "לחודש"}`;
+}
+
+// Normalized monthly price, for sorting/filtering
+export function monthlyPrice(y: Pick<Yeshiva, "price" | "pricePeriod">) {
+  if (y.price === null || y.price === undefined) return null;
+  return y.pricePeriod === "שנתי" ? y.price / 12 : y.price;
+}

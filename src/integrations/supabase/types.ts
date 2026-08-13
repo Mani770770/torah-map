@@ -132,6 +132,9 @@ export type Database = {
           maps_url: string | null
           name: string
           phone: string | null
+          price: number | null
+          price_note: string | null
+          price_period: string | null
           sector: string
           secular_studies: boolean | null
           size: string | null
@@ -154,6 +157,9 @@ export type Database = {
           maps_url?: string | null
           name: string
           phone?: string | null
+          price?: number | null
+          price_note?: string | null
+          price_period?: string | null
           sector: string
           secular_studies?: boolean | null
           size?: string | null
@@ -176,6 +182,9 @@ export type Database = {
           maps_url?: string | null
           name?: string
           phone?: string | null
+          price?: number | null
+          price_note?: string | null
+          price_period?: string | null
           sector?: string
           secular_studies?: boolean | null
           size?: string | null
