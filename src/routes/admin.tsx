@@ -5,7 +5,7 @@ import { SiteHeader } from "@/components/site-header";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { useYeshivot, SECTORS, GENDERS, type Yeshiva, type Sector, type Gender, type StaffMember } from "@/lib/yeshivot-store";
+import { useYeshivot, SECTORS, GENDERS, PRICE_PERIODS, formatPrice, type Yeshiva, type Sector, type Gender, type StaffMember } from "@/lib/yeshivot-store";
 import { useReviews, formatDate, type Review } from "@/lib/reviews-store";
 import { StarRating } from "@/components/star-rating";
 
@@ -23,6 +23,7 @@ type Draft = Omit<Yeshiva, "id">;
 const empty: Draft = {
   name: "", sector: "ליטאי", gender: "בנים", city: "", description: "",
   image: "", phone: "", website: "", address: "", mapsUrl: "", ages: "", dorm: false, type: "",
+  price: null, pricePeriod: "חודשי", priceNote: "",
   gallery: [], staff: [],
 };
 
@@ -145,6 +146,34 @@ function AdminPage() {
                 <Field label="סוג ישיבה">
                   <Input value={draft.type ?? ""} onChange={e => setDraft({ ...draft, type: e.target.value })} placeholder="ישיבה קטנה / גדולה / הסדר וכו'" />
                 </Field>
+                <Field label="עלות הישיבה (₪)">
+                  <Input
+                    type="number"
+                    min={0}
+                    step={50}
+                    value={draft.price ?? ""}
+                    onChange={e => setDraft({ ...draft, price: e.target.value === "" ? null : Number(e.target.value) })}
+                    placeholder="לדוגמה: 1500"
+                  />
+                </Field>
+                <Field label="תקופת התשלום">
+                  <select
+                    value={draft.pricePeriod ?? "חודשי"}
+                    onChange={e => setDraft({ ...draft, pricePeriod: e.target.value as "חודשי" | "שנתי" })}
+                    className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
+                  >
+                    {PRICE_PERIODS.map(p => <option key={p}>{p}</option>)}
+                  </select>
+                </Field>
+                <div className="sm:col-span-2">
+                  <Field label="הערה על העלות (אופציונלי)">
+                    <Input
+                      value={draft.priceNote ?? ""}
+                      onChange={e => setDraft({ ...draft, priceNote: e.target.value })}
+                      placeholder="לדוגמה: כולל פנימייה וארוחות"
+                    />
+                  </Field>
+                </div>
                 <div className="sm:col-span-2">
                   <label className="inline-flex items-center gap-2 text-sm font-medium text-foreground">
                     <input
@@ -291,6 +320,7 @@ function AdminPage() {
                 <Th>מגזר</Th>
                 <Th>מגדר</Th>
                 <Th>עיר</Th>
+                <Th>עלות</Th>
                 <Th className="text-center">פעולות</Th>
               </tr>
             </thead>
@@ -301,6 +331,7 @@ function AdminPage() {
                   <Td>{y.sector}</Td>
                   <Td>{y.gender}</Td>
                   <Td>{y.city}</Td>
+                  <Td>{formatPrice(y) ?? "—"}</Td>
                   <Td>
                     <div className="flex justify-center gap-1">
                       <button onClick={() => startEdit(y)} className="rounded-md p-2 text-muted-foreground hover:bg-primary/10 hover:text-primary" aria-label="עריכה">
@@ -314,7 +345,7 @@ function AdminPage() {
                 </tr>
               ))}
               {list.length === 0 && (
-                <tr><td colSpan={5} className="p-8 text-center text-muted-foreground">אין ישיבות באינדקס</td></tr>
+                <tr><td colSpan={6} className="p-8 text-center text-muted-foreground">אין ישיבות באינדקס</td></tr>
               )}
             </tbody>
           </table>
