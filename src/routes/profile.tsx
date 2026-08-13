@@ -40,6 +40,8 @@ function ProfilePage() {
   const [city, setCity] = useState("");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [cropSrc, setCropSrc] = useState<string | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (ready && !user) void navigate({ to: "/auth", replace: true });
@@ -71,23 +73,83 @@ function ProfilePage() {
     }
   };
 
+  const pickFile = (f: File | null | undefined) => {
+    if (!f) return;
+    const reader = new FileReader();
+    reader.onload = () => setCropSrc(String(reader.result));
+    reader.readAsDataURL(f);
+  };
+
+  const saveAvatar = async (dataUrl: string) => {
+    await save({ display_name: name, city: city || null, avatar_url: dataUrl });
+    setCropSrc(null);
+  };
+
+  const removeAvatar = async () => {
+    await save({ display_name: name, city: city || null, avatar_url: null });
+  };
+
   const initials = (name || user.email || "?").trim().charAt(0).toUpperCase();
+  const avatar = profile?.avatar_url ?? null;
 
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
+      {cropSrc && (
+        <AvatarCropper src={cropSrc} onCancel={() => setCropSrc(null)} onSave={saveAvatar} />
+      )}
       <PageTransition>
         <div className="mx-auto max-w-5xl px-4 py-8">
           <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-border bg-card p-6">
             <div className="flex items-center gap-4">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">
-                {initials}
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => fileRef.current?.click()}
+                  className="group relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-primary text-2xl font-bold text-primary-foreground ring-2 ring-primary/20 transition-all hover:ring-4 hover:ring-primary/30"
+                  aria-label="שינוי תמונת פרופיל"
+                >
+                  {avatar ? (
+                    <img src={avatar} alt="תמונת פרופיל" className="h-full w-full object-cover" />
+                  ) : (
+                    initials
+                  )}
+                  <span className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
+                    <Camera className="h-5 w-5 text-white" />
+                  </span>
+                </button>
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={e => { pickFile(e.target.files?.[0]); e.target.value = ""; }}
+                />
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-foreground">{name || "המשתמש שלי"}</h1>
                 <p dir="ltr" className="text-sm text-muted-foreground">{user.email}</p>
+                <div className="mt-1 flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => fileRef.current?.click()}
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
+                  >
+                    <Camera className="h-3.5 w-3.5" /> {avatar ? "החלפת תמונה" : "העלאת תמונה"}
+                  </button>
+                  {avatar && (
+                    <button
+                      type="button"
+                      onClick={removeAvatar}
+                      className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-destructive"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" /> הסרה
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
+
             <div className="flex flex-wrap items-center gap-2">
               <Button
                 variant="secondary"
