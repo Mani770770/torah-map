@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Heart, LogOut, Loader2, Star, User as UserIcon, Save, Users } from "lucide-react";
+import { Camera, Heart, LogOut, Loader2, Star, Trash2, User as UserIcon, Save, Users } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { PageTransition } from "@/components/page-transition";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,8 @@ import { useFavorites } from "@/lib/favorites-store";
 import { useYeshivot } from "@/lib/yeshivot-store";
 import { useReviews, formatDate } from "@/lib/reviews-store";
 import { StarRating } from "@/components/star-rating";
+import { AvatarCropper } from "@/components/avatar-cropper";
+
 
 export const Route = createFileRoute("/profile")({
   head: () => ({
