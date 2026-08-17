@@ -114,9 +114,19 @@ function YeshivotPage() {
       if (secularStudies !== null && y.secularStudies !== secularStudies) return false;
       if (size && y.size !== size) return false;
       if (term && ![y.name, y.city, y.sector, y.description].some(v => v.includes(term))) return false;
+      if (priceMin !== null || priceMax !== null) {
+        const normalized = y.price === null || y.price === undefined
+          ? null
+          : priceMode === "annual"
+            ? (y.pricePeriod === "שנתי" ? y.price : y.price * 12)
+            : monthlyPrice(y);
+        if (normalized === null) return false;
+        if (priceMin !== null && normalized < priceMin) return false;
+        if (priceMax !== null && normalized > priceMax) return false;
+      }
       return true;
     });
-  }, [list, q, gender, sector, region, city, dorm, secularStudies, size]);
+  }, [list, q, gender, sector, region, city, dorm, secularStudies, size, priceMin, priceMax, priceMode]);
 
   const ratings = useMemo(() => {
     const map = new Map<string, { avg: number; count: number }>();
