@@ -75,6 +75,9 @@ function YeshivotPage() {
   const secularStudies = search.secularStudies;
   const size = search.size;
   const sort = search.sort ?? "default";
+  const priceMin = search.priceMin;
+  const priceMax = search.priceMax;
+  const priceMode = search.priceMode ?? "monthly";
 
   const [citySearch, setCitySearch] = useState("");
 
