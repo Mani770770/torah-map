@@ -38,6 +38,9 @@ export const Route = createFileRoute("/yeshivot/")({
     secularStudies?: boolean | null;
     size?: Size | null;
     sort?: SortKey;
+    priceMin?: number | null;
+    priceMax?: number | null;
+    priceMode?: PriceMode;
   } => ({
     q: (s.q as string) || "",
     gender: (s.gender as Gender) || null,
@@ -48,6 +51,9 @@ export const Route = createFileRoute("/yeshivot/")({
     secularStudies: typeof s.secularStudies === "boolean" ? s.secularStudies : null,
     size: (s.size as Size) || null,
     sort: (SORTS.some(o => o.key === s.sort) ? (s.sort as SortKey) : "default"),
+    priceMin: typeof s.priceMin === "number" ? s.priceMin : null,
+    priceMax: typeof s.priceMax === "number" ? s.priceMax : null,
+    priceMode: (s.priceMode === "annual" ? "annual" : "monthly") as PriceMode,
   }),
 
   component: YeshivotPage,
