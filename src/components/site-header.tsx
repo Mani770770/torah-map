@@ -16,7 +16,12 @@ export function SiteHeader() {
   const [backClick, setBackClick] = useState(0);
   const [restartClick, setRestartClick] = useState(0);
   const [showRestartLoader, setShowRestartLoader] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const prev = useRef(favorites.length);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (favorites.length !== prev.current) {
