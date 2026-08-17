@@ -168,11 +168,14 @@ function YeshivotPage() {
   const setDorm = (val: boolean | null) => navigate({ search: (prev: typeof search) => ({ ...prev, dorm: val }) });
   const setSecularStudies = (val: boolean | null) => navigate({ search: (prev: typeof search) => ({ ...prev, secularStudies: val }) });
   const setSize = (val: Size | null) => navigate({ search: (prev: typeof search) => ({ ...prev, size: val }) });
+  const setPriceMin = (val: number | null) => navigate({ search: (prev: typeof search) => ({ ...prev, priceMin: val }) });
+  const setPriceMax = (val: number | null) => navigate({ search: (prev: typeof search) => ({ ...prev, priceMax: val }) });
+  const setPriceMode = (val: PriceMode) => navigate({ search: (prev: typeof search) => ({ ...prev, priceMode: val }) });
   const clear = () => {
     setCitySearch("");
-    navigate({ search: { q: "", gender: null, sector: null, region: null, city: null, dorm: null, secularStudies: null, size: null, sort: "default" } });
+    navigate({ search: { q: "", gender: null, sector: null, region: null, city: null, dorm: null, secularStudies: null, size: null, sort: "default", priceMin: null, priceMax: null, priceMode: "monthly" } });
   };
-  const activeCount = [gender, sector, region, city, dorm, secularStudies, size].filter(v => v !== null && v !== "" && v !== undefined).length;
+  const activeCount = [gender, sector, region, city, dorm, secularStudies, size, priceMin, priceMax, priceMode !== "monthly" ? priceMode : null].filter(v => v !== null && v !== "" && v !== undefined).length;
 
   // Restore scroll position when returning from a detail page
   useEffect(() => {
