@@ -61,7 +61,7 @@ export function SiteHeader() {
         }`}
       >
         <span>{l.label}</span>
-        {badge > 0 && (
+        {badge > 0 && mounted && (
           <span
             key={`${l.to}-${pulse}`}
             className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-500 px-1.5 text-[10px] font-bold text-white animate-badge-pop"
