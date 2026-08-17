@@ -304,6 +304,38 @@ function YeshivotPage() {
               ))}
             </FilterGroup>
 
+            <div className="mb-5">
+              <h3 className="mb-2 text-sm font-semibold text-foreground">טווח מחיר</h3>
+              <div className="mb-3 flex gap-2">
+                <Chip active={priceMode === "monthly"} onClick={() => setPriceMode("monthly")}>לחודש</Chip>
+                <Chip active={priceMode === "annual"} onClick={() => setPriceMode("annual")}>לשנה</Chip>
+              </div>
+              <div className="flex items-center gap-2">
+                <Input
+                  type="number"
+                  min={0}
+                  value={priceMin ?? ""}
+                  onChange={(e) => setPriceMin(e.target.value === "" ? null : Math.max(0, Number(e.target.value)))}
+                  placeholder="מינ'"
+                  className="h-9 text-sm"
+                />
+                <span className="text-muted-foreground">-</span>
+                <Input
+                  type="number"
+                  min={0}
+                  value={priceMax ?? ""}
+                  onChange={(e) => setPriceMax(e.target.value === "" ? null : Math.max(0, Number(e.target.value)))}
+                  placeholder="מקס'"
+                  className="h-9 text-sm"
+                />
+              </div>
+              {(priceMin !== null || priceMax !== null) && (
+                <p className="mt-1.5 text-xs text-muted-foreground">
+                  מציג מחירים {priceMode === "monthly" ? "לחודש" : "לשנה"}
+                </p>
+              )}
+            </div>
+
             {activeCount > 0 && (
               <Button variant="outline" className="mt-4 w-full" onClick={clear}>נקה סינון</Button>
             )}
