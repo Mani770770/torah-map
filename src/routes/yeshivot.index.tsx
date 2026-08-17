@@ -12,6 +12,7 @@ import { FavoriteButton } from "@/components/favorite-button";
 import { REGIONS, getRegion, type Region } from "@/lib/regions";
 
 export type SortKey = "default" | "priceDesc" | "priceAsc" | "ratingDesc" | "ratingAsc";
+export type PriceMode = "monthly" | "annual";
 export const SORTS: { key: SortKey; label: string }[] = [
   { key: "default", label: "ברירת מחדל" },
   { key: "priceDesc", label: "מחיר: מהגבוה לנמוך" },
