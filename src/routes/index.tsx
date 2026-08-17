@@ -147,7 +147,7 @@ function RegionsSection() {
             <Link
               key={r}
               to="/yeshivot"
-              search={{ q: "", gender: null, sector: null, region: r, city: null, dorm: null, secularStudies: null, size: null } as never}
+              search={{ q: "", gender: null, sector: null, region: r, city: null, dorm: null, secularStudies: null, size: null, sort: "default", priceMin: null, priceMax: null, priceMode: "monthly" } as never}
               className="group relative overflow-hidden rounded-2xl border border-border bg-card transition-all hover:-translate-y-1 hover:shadow-xl"
             >
               <div className={`relative flex h-44 items-center justify-center bg-gradient-to-br ${style.gradient} text-white`}>

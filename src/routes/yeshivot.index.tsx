@@ -12,6 +12,7 @@ import { FavoriteButton } from "@/components/favorite-button";
 import { REGIONS, getRegion, type Region } from "@/lib/regions";
 
 export type SortKey = "default" | "priceDesc" | "priceAsc" | "ratingDesc" | "ratingAsc";
+export type PriceMode = "monthly" | "annual";
 export const SORTS: { key: SortKey; label: string }[] = [
   { key: "default", label: "ברירת מחדל" },
   { key: "priceDesc", label: "מחיר: מהגבוה לנמוך" },
@@ -37,6 +38,9 @@ export const Route = createFileRoute("/yeshivot/")({
     secularStudies?: boolean | null;
     size?: Size | null;
     sort?: SortKey;
+    priceMin?: number | null;
+    priceMax?: number | null;
+    priceMode?: PriceMode;
   } => ({
     q: (s.q as string) || "",
     gender: (s.gender as Gender) || null,
@@ -47,6 +51,9 @@ export const Route = createFileRoute("/yeshivot/")({
     secularStudies: typeof s.secularStudies === "boolean" ? s.secularStudies : null,
     size: (s.size as Size) || null,
     sort: (SORTS.some(o => o.key === s.sort) ? (s.sort as SortKey) : "default"),
+    priceMin: typeof s.priceMin === "number" ? s.priceMin : null,
+    priceMax: typeof s.priceMax === "number" ? s.priceMax : null,
+    priceMode: (s.priceMode === "annual" ? "annual" : "monthly") as PriceMode,
   }),
 
   component: YeshivotPage,
@@ -68,6 +75,9 @@ function YeshivotPage() {
   const secularStudies = search.secularStudies;
   const size = search.size;
   const sort = search.sort ?? "default";
+  const priceMin = search.priceMin ?? null;
+  const priceMax = search.priceMax ?? null;
+  const priceMode = search.priceMode ?? "monthly";
 
   const [citySearch, setCitySearch] = useState("");
 
@@ -104,9 +114,19 @@ function YeshivotPage() {
       if (secularStudies !== null && y.secularStudies !== secularStudies) return false;
       if (size && y.size !== size) return false;
       if (term && ![y.name, y.city, y.sector, y.description].some(v => v.includes(term))) return false;
+      if (priceMin !== null || priceMax !== null) {
+        const normalized = y.price === null || y.price === undefined
+          ? null
+          : priceMode === "annual"
+            ? (y.pricePeriod === "שנתי" ? y.price : y.price * 12)
+            : monthlyPrice(y);
+        if (normalized === null) return false;
+        if (priceMin !== null && normalized < priceMin) return false;
+        if (priceMax !== null && normalized > priceMax) return false;
+      }
       return true;
     });
-  }, [list, q, gender, sector, region, city, dorm, secularStudies, size]);
+  }, [list, q, gender, sector, region, city, dorm, secularStudies, size, priceMin, priceMax, priceMode]);
 
   const ratings = useMemo(() => {
     const map = new Map<string, { avg: number; count: number }>();
@@ -148,11 +168,14 @@ function YeshivotPage() {
   const setDorm = (val: boolean | null) => navigate({ search: (prev: typeof search) => ({ ...prev, dorm: val }) });
   const setSecularStudies = (val: boolean | null) => navigate({ search: (prev: typeof search) => ({ ...prev, secularStudies: val }) });
   const setSize = (val: Size | null) => navigate({ search: (prev: typeof search) => ({ ...prev, size: val }) });
+  const setPriceMin = (val: number | null) => navigate({ search: (prev: typeof search) => ({ ...prev, priceMin: val }) });
+  const setPriceMax = (val: number | null) => navigate({ search: (prev: typeof search) => ({ ...prev, priceMax: val }) });
+  const setPriceMode = (val: PriceMode) => navigate({ search: (prev: typeof search) => ({ ...prev, priceMode: val }) });
   const clear = () => {
     setCitySearch("");
-    navigate({ search: { q: "", gender: null, sector: null, region: null, city: null, dorm: null, secularStudies: null, size: null, sort: "default" } });
+    navigate({ search: { q: "", gender: null, sector: null, region: null, city: null, dorm: null, secularStudies: null, size: null, sort: "default", priceMin: null, priceMax: null, priceMode: "monthly" } });
   };
-  const activeCount = [gender, sector, region, city, dorm, secularStudies, size].filter(v => v !== null && v !== "" && v !== undefined).length;
+  const activeCount = [gender, sector, region, city, dorm, secularStudies, size, priceMin, priceMax, priceMode !== "monthly" ? priceMode : null].filter(v => v !== null && v !== "" && v !== undefined).length;
 
   // Restore scroll position when returning from a detail page
   useEffect(() => {
@@ -280,6 +303,38 @@ function YeshivotPage() {
                 <Chip key={sz} active={size === sz} onClick={() => setSize(size === sz ? null : sz)}>{sz}</Chip>
               ))}
             </FilterGroup>
+
+            <div className="mb-5">
+              <h3 className="mb-2 text-sm font-semibold text-foreground">טווח מחיר</h3>
+              <div className="mb-3 flex gap-2">
+                <Chip active={priceMode === "monthly"} onClick={() => setPriceMode("monthly")}>לחודש</Chip>
+                <Chip active={priceMode === "annual"} onClick={() => setPriceMode("annual")}>לשנה</Chip>
+              </div>
+              <div className="flex items-center gap-2">
+                <Input
+                  type="number"
+                  min={0}
+                  value={priceMin ?? ""}
+                  onChange={(e) => setPriceMin(e.target.value === "" ? null : Math.max(0, Number(e.target.value)))}
+                  placeholder="מינ'"
+                  className="h-9 text-sm"
+                />
+                <span className="text-muted-foreground">-</span>
+                <Input
+                  type="number"
+                  min={0}
+                  value={priceMax ?? ""}
+                  onChange={(e) => setPriceMax(e.target.value === "" ? null : Math.max(0, Number(e.target.value)))}
+                  placeholder="מקס'"
+                  className="h-9 text-sm"
+                />
+              </div>
+              {(priceMin !== null || priceMax !== null) && (
+                <p className="mt-1.5 text-xs text-muted-foreground">
+                  מציג מחירים {priceMode === "monthly" ? "לחודש" : "לשנה"}
+                </p>
+              )}
+            </div>
 
             {activeCount > 0 && (
               <Button variant="outline" className="mt-4 w-full" onClick={clear}>נקה סינון</Button>
