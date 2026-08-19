@@ -10,7 +10,7 @@ import { useFavorites } from "@/lib/favorites-store";
 export const Route = createFileRoute("/favorites")({
   head: () => ({
     meta: [
-      { title: "המועדפים שלי — אינדקס הישיבות" },
+      { title: "המועדפים שלי — חיפוש ישיבות" },
       { name: "description", content: "הישיבות ששמרת במועדפים." },
     ],
   }),
@@ -47,7 +47,7 @@ function FavoritesPage() {
               <h2 className="mt-4 text-lg font-bold text-foreground">עדיין לא הוספת ישיבות למועדפים</h2>
               <p className="mt-2 text-sm text-muted-foreground">לחץ על אייקון הלב בכל ישיבה כדי לשמור אותה כאן.</p>
               <Button asChild className="mt-6">
-                <Link to="/yeshivot">עבור לאינדקס הישיבות</Link>
+                <Link to="/yeshivot">עבור לחיפוש ישיבות</Link>
               </Button>
             </div>
           ) : (

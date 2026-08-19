@@ -42,7 +42,7 @@ export function SiteHeader() {
 
   const links = [
     { to: "/", label: "בית" },
-    { to: "/yeshivot", label: "אינדקס ישיבות" },
+    { to: "/yeshivot", label: "חיפוש ישיבות" },
     { to: "/favorites", label: "המועדפים שלי", badge: favorites.length },
     { to: "/reviews", label: "חוות דעת ודירוגים" },
     { to: "/admin", label: "ניהול" },
@@ -121,7 +121,7 @@ export function SiteHeader() {
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
           <Link to="/" className="flex items-center gap-2 text-primary" onClick={() => setOpen(false)}>
             <BookOpen className="h-6 w-6" />
-            <span className="text-lg font-bold text-gradient-brand">אינדקס הישיבות</span>
+            <span className="text-lg font-bold text-gradient-brand">חיפוש ישיבות</span>
           </Link>
 
 

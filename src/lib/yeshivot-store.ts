@@ -42,7 +42,7 @@ const seed: Omit<Yeshiva, "id">[] = [
   { name: "ישיבת תומכי תמימים", sector: "חב\"ד", gender: "בנים", city: "כפר חב\"ד", description: "הישיבה המרכזית של חסידות חב\"ד, לימוד נגלה וחסידות.", dorm: true, secularStudies: false, size: "גדולה", gallery: [], staff: [] },
   { name: "ישיבת פורת יוסף", sector: "ספרדי", gender: "בנים", city: "ירושלים", description: "הישיבה הספרדית המרכזית, מקור לרבים מחכמי הדור הספרדי.", dorm: true, secularStudies: false, size: "גדולה", gallery: [], staff: [] },
   { name: "ישיבת הר עציון", sector: "דתי לאומי", gender: "בנים", city: "אלון שבות", description: "ישיבת הסדר מובילה בציונות הדתית, משלבת תורה ועבודה.", dorm: true, secularStudies: true, size: "גדולה", gallery: [], staff: [] },
-  { name: "סמינר בית יעקב הישן", sector: "ירושלמי", gender: "בנות", city: "ירושלים", description: "סמינר חרדי ותיק לבנות, מהמוסדות המובילים בחינוך הבנות.", dorm: true, secularStudies: false, size: "גדולה", gallery: [], staff: [] },
+  { name: "סמינר בית יעקב הישן", sector: "ירושלמי", gender: "בנות", city: "ירושלים", description: "סמינר חרדי ותיק לבנות, מהישיבות והסמינרים המובילים בחינוך הבנות.", dorm: true, secularStudies: false, size: "גדולה", gallery: [], staff: [] },
   { name: "ישיבת בית מתתיהו", sector: "ליטאי", gender: "בנים", city: "בני ברק", description: "ישיבה ליטאית מרכזית בבני ברק עם דגש על לימוד עיוני.", dorm: true, secularStudies: false, size: "קטנה", gallery: [], staff: [] },
   { name: "סמינר בית רבקה", sector: "חב\"ד", gender: "בנות", city: "כפר חב\"ד", description: "סמינר הבנות המרכזי של חסידות חב\"ד.", dorm: true, secularStudies: false, size: "קטנה", gallery: [], staff: [] },
 ];

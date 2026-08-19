@@ -12,8 +12,8 @@ import { StarRating } from "@/components/star-rating";
 export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
-      { title: "ניהול ישיבות — אינדקס" },
-      { name: "description", content: "פאנל ניהול להוספה, עריכה ומחיקה של ישיבות מהאינדקס." },
+      { title: "ניהול ישיבות — חיפוש" },
+      { name: "description", content: "פאנל ניהול להוספה, עריכה ומחיקה של ישיבות מהחיפוש." },
     ],
   }),
   component: AdminPage,
@@ -81,7 +81,7 @@ function AdminPage() {
         <div className="mb-6 flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-foreground">ניהול ישיבות</h1>
-            <p className="mt-1 text-muted-foreground">הוספה, עריכה ומחיקה של ישיבות באינדקס</p>
+            <p className="mt-1 text-muted-foreground">הוספה, עריכה ומחיקה של ישיבות בחיפוש</p>
           </div>
           {!showForm && (
             <Button onClick={startAdd}>
@@ -110,7 +110,7 @@ function AdminPage() {
                 <Field label="עיר">
                   <Input value={draft.city} onChange={e => setDraft({ ...draft, city: e.target.value })} required maxLength={50} />
                 </Field>
-                <Field label="מגזר / זרם">
+                <Field label="סוג / זרם">
                   <select
                     value={draft.sector}
                     onChange={e => setDraft({ ...draft, sector: e.target.value as Sector })}
@@ -143,7 +143,7 @@ function AdminPage() {
                 <Field label="גילאים">
                   <Input value={draft.ages ?? ""} onChange={e => setDraft({ ...draft, ages: e.target.value })} placeholder="לדוגמה: 14-18" />
                 </Field>
-                <Field label="סוג ישיבה">
+                <Field label="גודל ישיבה">
                   <Input value={draft.type ?? ""} onChange={e => setDraft({ ...draft, type: e.target.value })} placeholder="ישיבה קטנה / גדולה / הסדר וכו'" />
                 </Field>
                 <Field label="עלות הישיבה (₪)">
@@ -166,7 +166,7 @@ function AdminPage() {
                   </select>
                 </Field>
                 <div className="sm:col-span-2">
-                  <Field label="הערה על העלות (אופציונלי)">
+                  <Field label="הערה על העלות (רשות)">
                     <Input
                       value={draft.priceNote ?? ""}
                       onChange={e => setDraft({ ...draft, priceNote: e.target.value })}
@@ -345,7 +345,7 @@ function AdminPage() {
                 </tr>
               ))}
               {list.length === 0 && (
-                <tr><td colSpan={6} className="p-8 text-center text-muted-foreground">אין ישיבות באינדקס</td></tr>
+                <tr><td colSpan={6} className="p-8 text-center text-muted-foreground">אין ישיבות בחיפוש</td></tr>
               )}
             </tbody>
           </table>

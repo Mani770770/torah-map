@@ -12,8 +12,8 @@ import { useYeshivot } from "@/lib/yeshivot-store";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "אינדקס הישיבות בישראל — חיפוש ישיבות לבנים ובנות" },
-      { name: "description", content: "אינדקס מקיף לכל הישיבות בישראל - חב\"ד, ליטאי, ירושלמי, ספרדי ועוד. חיפוש לפי מגדר, מגזר ועיר." },
+      { title: "חיפוש ישיבות בישראל — מצאו ישיבה לבנים ולבנות" },
+      { name: "description", content: "רשימה מקיפה של כל הישיבות בישראל - חב\"ד, ליטאי, ירושלמי, ספרדי ועוד. חיפוש לפי מגדר, סוג ועיר." },
     ],
   }),
   component: HomePage,
@@ -39,7 +39,7 @@ function HomePage() {
         <div className="pointer-events-none absolute -bottom-28 -end-20 h-80 w-80 rounded-full bg-teal/20 blur-3xl" />
         <div className="relative mx-auto max-w-3xl text-center">
           <span className="inline-flex items-center gap-2 rounded-full border border-gold-accent bg-white/10 px-4 py-1 text-xs font-semibold tracking-wide">
-            אינדקס הישיבות בישראל
+            חיפוש ישיבות בישראל
           </span>
           <h1 className="mt-4 text-4xl font-bold leading-tight sm:text-5xl">
             כל הישיבות בישראל במקום אחד
@@ -65,7 +65,7 @@ function HomePage() {
         <div className="mb-8 flex items-end justify-between">
           <div>
             <h2 className="text-2xl font-bold text-gradient-brand sm:text-3xl">ישיבות נבחרות</h2>
-            <p className="mt-1 text-muted-foreground">מבחר מהמוסדות המובילים באינדקס</p>
+            <p className="mt-1 text-muted-foreground">מבחר מהישיבות המובילות בחיפוש</p>
           </div>
 
           <Link to="/yeshivot" className="text-sm font-medium text-primary hover:underline">

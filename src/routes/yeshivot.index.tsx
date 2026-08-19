@@ -24,7 +24,7 @@ export const SORTS: { key: SortKey; label: string }[] = [
 export const Route = createFileRoute("/yeshivot/")({
   head: () => ({
     meta: [
-      { title: "אינדקס הישיבות — חיפוש וסינון" },
+      { title: "חיפוש ישיבות — סינון ומיון" },
       { name: "description", content: "רשימת כל הישיבות בישראל עם סינון לפי מגדר, מגזר ועיר." },
     ],
   }),
@@ -212,7 +212,7 @@ function YeshivotPage() {
       <PageTransition>
       <div className="mx-auto max-w-7xl px-4 py-8">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-foreground">אינדקס הישיבות</h1>
+          <h1 className="text-3xl font-bold text-foreground">חיפוש ישיבות</h1>
           <p className="mt-1 text-muted-foreground">{filtered.length} ישיבות נמצאו</p>
         </div>
 
@@ -236,7 +236,7 @@ function YeshivotPage() {
               ))}
             </FilterGroup>
 
-            <FilterGroup label="מגזר / זרם">
+            <FilterGroup label="סוג / זרם">
               {SECTORS.map(s => (
                 <Chip key={s} active={sector === s} onClick={() => setSector(sector === s ? null : s)}>{s}</Chip>
               ))}
@@ -298,7 +298,7 @@ function YeshivotPage() {
               <Chip active={secularStudies === false} onClick={() => setSecularStudies(secularStudies === false ? null : false)}>לא</Chip>
             </FilterGroup>
 
-            <FilterGroup label="סוג ישיבה">
+            <FilterGroup label="גודל ישיבה">
               {SIZES.map(sz => (
                 <Chip key={sz} active={size === sz} onClick={() => setSize(size === sz ? null : sz)}>{sz}</Chip>
               ))}
