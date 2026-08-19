@@ -39,7 +39,7 @@ function HomePage() {
         <div className="pointer-events-none absolute -bottom-28 -end-20 h-80 w-80 rounded-full bg-teal/20 blur-3xl" />
         <div className="relative mx-auto max-w-3xl text-center">
           <span className="inline-flex items-center gap-2 rounded-full border border-gold-accent bg-white/10 px-4 py-1 text-xs font-semibold tracking-wide">
-            אינדקס הישיבות בישראל
+            חיפוש ישיבות בישראל
           </span>
           <h1 className="mt-4 text-4xl font-bold leading-tight sm:text-5xl">
             כל הישיבות בישראל במקום אחד
