@@ -12,8 +12,8 @@ import { StarRating } from "@/components/star-rating";
 export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
-      { title: "ניהול ישיבות — אינדקס" },
-      { name: "description", content: "פאנל ניהול להוספה, עריכה ומחיקה של ישיבות מהאינדקס." },
+      { title: "ניהול ישיבות — חיפוש" },
+      { name: "description", content: "פאנל ניהול להוספה, עריכה ומחיקה של ישיבות מהחיפוש." },
     ],
   }),
   component: AdminPage,

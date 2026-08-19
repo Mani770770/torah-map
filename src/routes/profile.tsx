@@ -17,9 +17,9 @@ import { AvatarCropper } from "@/components/avatar-cropper";
 export const Route = createFileRoute("/profile")({
   head: () => ({
     meta: [
-      { title: "הפרופיל שלי — אינדקס הישיבות" },
+      { title: "הפרופיל שלי — חיפוש ישיבות" },
       { name: "description", content: "הפרטים האישיים שלך, הישיבות המועדפות וחוות הדעת שכתבת." },
-      { property: "og:title", content: "הפרופיל שלי — אינדקס הישיבות" },
+      { property: "og:title", content: "הפרופיל שלי — חיפוש ישיבות" },
       { property: "og:description", content: "הפרטים האישיים שלך, הישיבות המועדפות וחוות הדעת שכתבת." },
       { property: "og:type", content: "profile" },
       { name: "twitter:card", content: "summary" },
@@ -196,7 +196,7 @@ function ProfilePage() {
             {favItems.length === 0 ? (
               <p className="mt-3 text-sm text-muted-foreground">
                 עדיין לא שמרת ישיבות.{" "}
-                <Link to="/yeshivot" className="font-semibold text-primary hover:underline">עבור לאינדקס</Link>
+                <Link to="/yeshivot" className="font-semibold text-primary hover:underline">עבור לחיפוש</Link>
               </p>
             ) : (
               <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

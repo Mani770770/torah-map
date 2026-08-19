@@ -13,7 +13,7 @@ import { Check, ChevronDown, X } from "lucide-react";
 export const Route = createFileRoute("/reviews")({
   head: () => ({
     meta: [
-      { title: "חוות דעת ודירוגים — אינדקס הישיבות" },
+      { title: "חוות דעת ודירוגים — חיפוש ישיבות" },
       { name: "description", content: "שיתוף חוות דעת ודירוג ישיבות על בסיס ניסיון אישי." },
     ],
   }),
