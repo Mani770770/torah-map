@@ -74,7 +74,7 @@ function YeshivaDetailPage() {
                 <RefreshCw className="h-4 w-4" /> נסה שוב
               </Button>
               <Button asChild variant="outline">
-                <Link to="/yeshivot" search={backSearch}>חזרה לאינדקס</Link>
+                <Link to="/yeshivot" search={backSearch}>חזרה לחיפוש</Link>
               </Button>
             </div>
           </div>
@@ -103,7 +103,7 @@ function YeshivaDetailPage() {
                 <RefreshCw className="h-4 w-4" /> רענון
               </Button>
               <Button asChild>
-                <Link to="/yeshivot" search={backSearch}>חזרה לאינדקס</Link>
+                <Link to="/yeshivot" search={backSearch}>חזרה לחיפוש</Link>
               </Button>
             </div>
           </div>
@@ -148,7 +148,7 @@ function YeshivaDetailPage() {
                     navigate({ to: "/yeshivot", search: backSearch });
                   }
                 }}
-                placeholder="חיפוש מהיר — לחץ Enter לחזור לאינדקס..."
+                placeholder="חיפוש מהיר — לחץ Enter לחזור לחיפוש..."
                 className="pe-9"
               />
             </div>
@@ -164,7 +164,7 @@ function YeshivaDetailPage() {
             )}
             <Button asChild variant="outline" size="sm" className="inline-flex items-center gap-1 rounded-full border-border hover:bg-primary/5 hover:text-primary hover:border-primary/30 shrink-0">
               <Link to="/yeshivot" search={backSearch}>
-                <ArrowRight className="h-4 w-4" /> חזרה לאינדקס
+                <ArrowRight className="h-4 w-4" /> חזרה לחיפוש
               </Link>
             </Button>
           </div>
@@ -202,7 +202,7 @@ function YeshivaDetailPage() {
               <Info label="מגזר / זרם" value={y.sector} />
               <Info label="מגדר" value={y.gender} />
               <Info label="עיר" value={y.city} />
-              <Info label="סוג מוסד" value={y.type || "ישיבה"} />
+              <Info label="סוג ישיבה" value={y.type || "ישיבה"} />
               {y.ages && <Info label="גילאים" value={y.ages} />}
               <Info label="פנימייה" value={y.dorm ? "כן" : "לא"} />
               <Info label="עלות הישיבה" value={formatPrice(y) ?? "לא צוין"} />
@@ -343,7 +343,7 @@ function YeshivaDetailPage() {
         <div className="mt-10 flex justify-center">
           <Button asChild variant="outline" size="lg" className="inline-flex items-center gap-2 rounded-full border-border hover:bg-primary/5 hover:text-primary hover:border-primary/30">
             <Link to="/yeshivot" search={backSearch}>
-              <ArrowRight className="h-5 w-5" /> חזרה לאינדקס
+              <ArrowRight className="h-5 w-5" /> חזרה לחיפוש
             </Link>
           </Button>
         </div>
