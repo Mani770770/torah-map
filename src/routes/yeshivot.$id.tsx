@@ -199,10 +199,10 @@ function YeshivaDetailPage() {
             <p className="mt-3 leading-relaxed text-muted-foreground whitespace-pre-line">{y.description}</p>
 
             <dl className="mt-6 grid gap-4 sm:grid-cols-2">
-              <Info label="מגזר / זרם" value={y.sector} />
+              <Info label="סוג / זרם" value={y.sector} />
               <Info label="מגדר" value={y.gender} />
               <Info label="עיר" value={y.city} />
-              <Info label="סוג ישיבה" value={y.type || "ישיבה"} />
+              <Info label="גודל ישיבה" value={y.type || "ישיבה"} />
               {y.ages && <Info label="גילאים" value={y.ages} />}
               <Info label="פנימייה" value={y.dorm ? "כן" : "לא"} />
               <Info label="עלות הישיבה" value={formatPrice(y) ?? "לא צוין"} />

@@ -236,7 +236,7 @@ function YeshivotPage() {
               ))}
             </FilterGroup>
 
-            <FilterGroup label="מגזר / זרם">
+            <FilterGroup label="סוג / זרם">
               {SECTORS.map(s => (
                 <Chip key={s} active={sector === s} onClick={() => setSector(sector === s ? null : s)}>{s}</Chip>
               ))}
@@ -298,7 +298,7 @@ function YeshivotPage() {
               <Chip active={secularStudies === false} onClick={() => setSecularStudies(secularStudies === false ? null : false)}>לא</Chip>
             </FilterGroup>
 
-            <FilterGroup label="סוג ישיבה">
+            <FilterGroup label="גודל ישיבה">
               {SIZES.map(sz => (
                 <Chip key={sz} active={size === sz} onClick={() => setSize(size === sz ? null : sz)}>{sz}</Chip>
               ))}

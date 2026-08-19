@@ -110,7 +110,7 @@ function AdminPage() {
                 <Field label="עיר">
                   <Input value={draft.city} onChange={e => setDraft({ ...draft, city: e.target.value })} required maxLength={50} />
                 </Field>
-                <Field label="מגזר / זרם">
+                <Field label="סוג / זרם">
                   <select
                     value={draft.sector}
                     onChange={e => setDraft({ ...draft, sector: e.target.value as Sector })}
@@ -143,7 +143,7 @@ function AdminPage() {
                 <Field label="גילאים">
                   <Input value={draft.ages ?? ""} onChange={e => setDraft({ ...draft, ages: e.target.value })} placeholder="לדוגמה: 14-18" />
                 </Field>
-                <Field label="סוג ישיבה">
+                <Field label="גודל ישיבה">
                   <Input value={draft.type ?? ""} onChange={e => setDraft({ ...draft, type: e.target.value })} placeholder="ישיבה קטנה / גדולה / הסדר וכו'" />
                 </Field>
                 <Field label="עלות הישיבה (₪)">
