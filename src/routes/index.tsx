@@ -12,8 +12,8 @@ import { useYeshivot } from "@/lib/yeshivot-store";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "אינדקס הישיבות בישראל — חיפוש ישיבות לבנים ובנות" },
-      { name: "description", content: "אינדקס מקיף לכל הישיבות בישראל - חב\"ד, ליטאי, ירושלמי, ספרדי ועוד. חיפוש לפי מגדר, מגזר ועיר." },
+      { title: "חיפוש ישיבות בישראל — מצאו ישיבה לבנים ולבנות" },
+      { name: "description", content: "רשימה מקיפה של כל הישיבות בישראל - חב\"ד, ליטאי, ירושלמי, ספרדי ועוד. חיפוש לפי מגדר, סוג ועיר." },
     ],
   }),
   component: HomePage,
