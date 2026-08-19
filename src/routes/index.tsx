@@ -65,7 +65,7 @@ function HomePage() {
         <div className="mb-8 flex items-end justify-between">
           <div>
             <h2 className="text-2xl font-bold text-gradient-brand sm:text-3xl">ישיבות נבחרות</h2>
-            <p className="mt-1 text-muted-foreground">מבחר מהמוסדות המובילים באינדקס</p>
+            <p className="mt-1 text-muted-foreground">מבחר מהישיבות המובילות בחיפוש</p>
           </div>
 
           <Link to="/yeshivot" className="text-sm font-medium text-primary hover:underline">
