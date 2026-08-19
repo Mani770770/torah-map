@@ -15,9 +15,9 @@ export const Route = createFileRoute("/auth")({
   }),
   head: () => ({
     meta: [
-      { title: "התחברות והרשמה — אינדקס הישיבות" },
+      { title: "התחברות והרשמה — חיפוש ישיבות" },
       { name: "description", content: "התחברו או הירשמו כדי לשמור ישיבות מועדפות ולנהל את חוות הדעת שלכם." },
-      { property: "og:title", content: "התחברות והרשמה — אינדקס הישיבות" },
+      { property: "og:title", content: "התחברות והרשמה — חיפוש ישיבות" },
       { property: "og:description", content: "התחברו או הירשמו כדי לשמור ישיבות מועדפות ולנהל את חוות הדעת שלכם." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -85,7 +85,7 @@ function AuthPage() {
         <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-4 py-10">
           <Link to="/" className="mb-6 flex items-center justify-center gap-2 text-primary">
             <BookOpen className="h-7 w-7" />
-            <span className="text-xl font-bold">אינדקס הישיבות</span>
+            <span className="text-xl font-bold">חיפוש ישיבות</span>
           </Link>
 
           <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">

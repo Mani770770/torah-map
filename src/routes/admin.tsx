@@ -81,7 +81,7 @@ function AdminPage() {
         <div className="mb-6 flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-foreground">ניהול ישיבות</h1>
-            <p className="mt-1 text-muted-foreground">הוספה, עריכה ומחיקה של ישיבות באינדקס</p>
+            <p className="mt-1 text-muted-foreground">הוספה, עריכה ומחיקה של ישיבות בחיפוש</p>
           </div>
           {!showForm && (
             <Button onClick={startAdd}>
@@ -166,7 +166,7 @@ function AdminPage() {
                   </select>
                 </Field>
                 <div className="sm:col-span-2">
-                  <Field label="הערה על העלות (אופציונלי)">
+                  <Field label="הערה על העלות (רשות)">
                     <Input
                       value={draft.priceNote ?? ""}
                       onChange={e => setDraft({ ...draft, priceNote: e.target.value })}
@@ -345,7 +345,7 @@ function AdminPage() {
                 </tr>
               ))}
               {list.length === 0 && (
-                <tr><td colSpan={6} className="p-8 text-center text-muted-foreground">אין ישיבות באינדקס</td></tr>
+                <tr><td colSpan={6} className="p-8 text-center text-muted-foreground">אין ישיבות בחיפוש</td></tr>
               )}
             </tbody>
           </table>
