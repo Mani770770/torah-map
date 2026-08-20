@@ -82,7 +82,7 @@ export function AccessibilityWidget() {
   return (
     <>
       {/* פילטרים לעיוורי צבעים */}
-      <svg aria-hidden="true" focusable="false" className="pointer-events-none absolute h-0 w-0">
+      <svg data-a11y-ui aria-hidden="true" focusable="false" className="pointer-events-none absolute h-0 w-0">
         <defs>
           <filter id="a11y-red-green">
             <feColorMatrix
@@ -107,6 +107,7 @@ export function AccessibilityWidget() {
 
       <button
         type="button"
+        data-a11y-ui
         onClick={() => setOpen((v) => !v)}
         aria-label={open ? "סגור תפריט נגישות" : "פתח תפריט נגישות"}
         aria-expanded={open}
@@ -119,6 +120,7 @@ export function AccessibilityWidget() {
       {open && (
         <div
           ref={panelRef}
+          data-a11y-ui
           role="dialog"
           aria-label="הגדרות נגישות"
           className="fixed bottom-20 start-4 z-[60] max-h-[75vh] w-[min(22rem,calc(100vw-2rem))] overflow-y-auto rounded-2xl border border-border bg-card p-4 shadow-2xl"

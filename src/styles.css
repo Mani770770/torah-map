@@ -217,9 +217,9 @@ html {
   font-size: calc(16px * var(--a11y-font-scale, 1));
 }
 
-html[data-a11y-color="red-green"] body { filter: url(#a11y-red-green); }
-html[data-a11y-color="blue-yellow"] body { filter: url(#a11y-blue-yellow); }
-html[data-a11y-color="grayscale"] body { filter: grayscale(1); }
+html[data-a11y-color="red-green"] body > *:not([data-a11y-ui]) { filter: url(#a11y-red-green); }
+html[data-a11y-color="blue-yellow"] body > *:not([data-a11y-ui]) { filter: url(#a11y-blue-yellow); }
+html[data-a11y-color="grayscale"] body > *:not([data-a11y-ui]) { filter: grayscale(1); }
 
 html.a11y-readable-font body,
 html.a11y-readable-font body * {
