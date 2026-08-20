@@ -211,3 +211,79 @@
 @utility border-gold-accent {
   border-color: color-mix(in oklab, var(--gold) 45%, transparent);
 }
+
+/* ===== מערכת נגישות ===== */
+html {
+  font-size: calc(16px * var(--a11y-font-scale, 1));
+}
+
+html[data-a11y-color="red-green"] body > *:not([data-a11y-ui]) { filter: url(#a11y-red-green); }
+html[data-a11y-color="blue-yellow"] body > *:not([data-a11y-ui]) { filter: url(#a11y-blue-yellow); }
+html[data-a11y-color="grayscale"] body > *:not([data-a11y-ui]) { filter: grayscale(1); }
+
+html.a11y-readable-font body,
+html.a11y-readable-font body * {
+  font-family: Arial, "Segoe UI", Tahoma, sans-serif !important;
+  letter-spacing: 0.01em;
+}
+
+html.a11y-spacing body {
+  line-height: 1.9 !important;
+  letter-spacing: 0.05em;
+  word-spacing: 0.12em;
+}
+
+html.a11y-contrast {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0 0 0);
+  --primary: oklch(0.15 0 0);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.95 0 0);
+  --secondary-foreground: oklch(0 0 0);
+  --muted: oklch(0.95 0 0);
+  --muted-foreground: oklch(0.25 0 0);
+  --accent: oklch(0.92 0 0);
+  --accent-foreground: oklch(0 0 0);
+  --border: oklch(0.2 0 0);
+  --input: oklch(0.2 0 0);
+  --ring: oklch(0 0 0);
+  --brand: oklch(0.15 0 0);
+  --brand-soft: oklch(0.92 0 0);
+  --gold: oklch(0.45 0.14 78);
+  --teal: oklch(0.35 0.09 195);
+}
+html.a11y-contrast body { background-image: none !important; }
+html.a11y-contrast .text-gradient-brand {
+  background-image: none;
+  color: var(--foreground);
+}
+
+html.a11y-reduce-motion *,
+html.a11y-reduce-motion *::before,
+html.a11y-reduce-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+html.a11y-highlight-links a,
+html.a11y-highlight-links button,
+html.a11y-highlight-links [role="button"] {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+html.a11y-highlight-links a {
+  text-decoration: underline !important;
+  text-underline-offset: 3px;
+}
+
+:focus-visible {
+  outline: 3px solid var(--ring);
+  outline-offset: 2px;
+}
